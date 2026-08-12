@@ -83,6 +83,24 @@ function loadCommon(storage) {
   await c.setSiteMute("other.example", "always");
   check((await c.getSiteMute("example.com")) === "off", "andere Seiten bleiben unberuehrt");
 
+  // Lange Liste: der Deckel greift, und zwar von vorn.
+  const many = makeStorage({ cbMutedHosts: Array.from({ length: 250 }, (_, i) => `s${i}.example`) });
+  const cm = loadCommon(many);
+  await cm.setSiteMute("neu.example", "always");
+  const list = many.sync.data.cbMutedHosts;
+  check(
+    list.length === 250 && list[list.length - 1] === "neu.example" && list[0] === "s1.example",
+    "ueber dem Deckel faellt der aelteste Eintrag raus",
+    `${list.length} Eintraege, erster ${list[0]}, letzter ${list[list.length - 1]}`
+  );
+  check((await cm.getSiteMute("s0.example")) === "off", "der verdraengte Eintrag meldet sich wieder");
+
+  await cm.clearSiteMutes();
+  check(
+    many.sync.data.cbMutedHosts.length === 0 && many.session.data.cbMutedHostsSession.length === 0,
+    "alle wieder einschalten leert beide Bereiche"
+  );
+
   // --- background.js: meldet sich nicht mehr, zaehlt aber weiter ----------
 
   for (const [mode, wantPopup] of [["off", true], ["session", false], ["always", false]]) {

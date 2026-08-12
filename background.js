@@ -107,11 +107,7 @@ function scheduleScan(tabId, url, hints) {
 const AUTO_SCAN_SCRIPT_ID = "cb-deal-finder-hints";
 
 async function isAutoScanEnabled() {
-  try {
-    return await chrome.permissions.contains({ origins: CB_AUTO_SCAN_ORIGINS });
-  } catch (e) {
-    return false;
-  }
+  return await cbHasAutoScanPermission();
 }
 
 async function registerAutoScanContentScript() {

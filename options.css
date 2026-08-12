@@ -221,6 +221,9 @@ body {
 
 .control-box .chip { white-space: nowrap; }
 
+/* .chip setzt display: inline-block - ohne das hier bliebe [hidden] wirkungslos. */
+.chip[hidden] { display: none; }
+
 /* Switch: a hard-edged track with a square knob that slides right when on. */
 .switch {
   width: 38px;
@@ -291,9 +294,47 @@ body {
 
 /* --- Sites switched off -------------------------------------------------- */
 
+.muted-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.muted-count {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.muted-head input {
+  width: 150px;
+  border: 1px solid var(--rule-strong);
+  background: var(--white);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 8px;
+}
+.muted-head input::placeholder { color: var(--muted); }
+
+/* Der zweite Klick raeumt wirklich alles - bis dahin sieht der Knopf aus wie
+   eine Warnung, nicht wie eine weitere Schaltflaeche. */
+.btn.outline.armed {
+  background: var(--ink);
+  color: var(--paper);
+}
+
 .muted-list {
   border: 1px solid var(--rule);
   background: var(--white);
+  /* Rund sechs Zeilen; danach scrollt die Liste in sich, statt die Seite
+     beliebig lang zu machen. */
+  max-height: 258px;
+  overflow-y: auto;
 }
 
 .muted-row {

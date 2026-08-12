@@ -111,6 +111,28 @@ const CB_NOTIFY_KEY = "cbNotifyLevel"; // "silent" | "notification" | "popup"
 const CB_NOTIFY_DEFAULT = "popup";
 const CB_AUTO_SCAN_ORIGINS = ["https://*/*", "http://*/*"];
 
+// Erteilt der Nutzer den Zugriff nicht ueber unseren Schalter, sondern ueber
+// Chromes eigene Oberflaeche ("Auf allen Websites" im Symbolmenue, oder
+// chrome://extensions), steht in getAll() ein anderes Muster als das, was wir
+// angefragt haben - contains() sagt dann trotz erteiltem Vollzugriff "nein".
+// Deshalb zusaetzlich pruefen, ob irgendein erteiltes Muster alle Seiten deckt.
+const CB_ALL_SITES_PATTERNS = new Set([
+  "<all_urls>",
+  "*://*/*",
+  "https://*/*",
+  "http://*/*",
+]);
+
+async function cbHasAutoScanPermission() {
+  try {
+    if (await chrome.permissions.contains({ origins: CB_AUTO_SCAN_ORIGINS })) return true;
+    const all = await chrome.permissions.getAll();
+    return (all.origins || []).some((o) => CB_ALL_SITES_PATTERNS.has(o));
+  } catch (e) {
+    return false;
+  }
+}
+
 // --- Pro Seite: automatisches Melden abschalten ---------------------------
 //
 // Die Einstellung "Wenn ein Treffer gefunden wird" gilt global. Auf einzelnen
@@ -149,6 +171,13 @@ async function getSiteMute(hostname) {
   return "off";
 }
 
+// chrome.storage.sync erlaubt nur 8 KB je Eintrag - bei etwa 350 Hostnamen
+// waere Schluss, und zwar mit einem Schreibfehler statt einer Warnung. Deshalb
+// ein Deckel weit darunter: ist er erreicht, faellt der aelteste Eintrag raus
+// (Sets behalten die Einfuegereihenfolge). Wer so viele Seiten abschaltet, hat
+// die erste vor Monaten gesetzt und vermisst sie nicht.
+const CB_MUTED_MAX = 250;
+
 /** Setzt genau einen der drei Zustaende; die anderen beiden werden geloescht. */
 async function setSiteMute(hostname, mode) {
   const key = muteHostKey(hostname);
@@ -158,9 +187,25 @@ async function setSiteMute(hostname, mode) {
   session.delete(key);
   if (mode === "always") always.add(key);
   if (mode === "session") session.add(key);
+
+  let alwaysList = [...always];
+  if (alwaysList.length > CB_MUTED_MAX) alwaysList = alwaysList.slice(-CB_MUTED_MAX);
+
   await Promise.all([
-    chrome.storage.sync.set({ [CB_MUTED_KEY]: [...always] }),
+    chrome.storage.sync.set({ [CB_MUTED_KEY]: alwaysList }),
     chrome.storage.session.set({ [CB_MUTED_SESSION_KEY]: [...session] }),
+  ]);
+}
+
+/**
+ * Schaltet alle Seiten auf einmal wieder ein. Bewusst ein einziger Schreib-
+ * vorgang je Bereich: storage.sync begrenzt die Schreibzugriffe pro Minute,
+ * eine Schleife ueber setSiteMute() liefe bei langen Listen dagegen.
+ */
+async function clearSiteMutes() {
+  await Promise.all([
+    chrome.storage.sync.set({ [CB_MUTED_KEY]: [] }),
+    chrome.storage.session.set({ [CB_MUTED_SESSION_KEY]: [] }),
   ]);
 }
 

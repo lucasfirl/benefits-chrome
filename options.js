@@ -15,6 +15,7 @@ const portalStatus = document.getElementById("status");
 const autoScanToggle = document.getElementById("autoScanToggle");
 const autoScanTitle = document.getElementById("autoScanTitle");
 const autoScanDesc = document.getElementById("autoScanDesc");
+const autoScanChip = document.getElementById("autoScanChip");
 
 const notifyList = document.getElementById("notifyList");
 
@@ -229,14 +230,32 @@ setupForm.addEventListener("submit", async (e) => {
 // --- Automatic scanning ---------------------------------------------------
 
 async function refreshAutoScanUi() {
-  const enabled = await chrome.permissions.contains({ origins: CB_AUTO_SCAN_ORIGINS });
+  const enabled = await cbHasAutoScanPermission();
   autoScanToggle.setAttribute("aria-checked", enabled ? "true" : "false");
   autoScanTitle.textContent = enabled ? t("optionsAutoScanOnTitle") : t("optionsAutoScanOffTitle");
   autoScanDesc.textContent = enabled ? t("optionsAutoScanOnDesc") : t("optionsAutoScanOffDesc");
+  // Der Hinweis gilt nur fuer das Einschalten - ist die Berechtigung erteilt,
+  // fragt hier nichts mehr nach.
+  autoScanChip.hidden = enabled;
 }
 
+// Der Zugriff laesst sich auch ausserhalb dieser Seite aendern (Symbolmenue,
+// chrome://extensions). Liegt die Optionsseite dabei offen, zeigte sie sonst
+// weiter den alten Stand.
+chrome.permissions.onAdded.addListener(() => {
+  refreshAutoScanUi();
+  refreshStatusPanel();
+});
+chrome.permissions.onRemoved.addListener(() => {
+  refreshAutoScanUi();
+  refreshStatusPanel();
+});
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) refreshAutoScanUi();
+});
+
 autoScanToggle.addEventListener("click", async () => {
-  const currentlyEnabled = await chrome.permissions.contains({ origins: CB_AUTO_SCAN_ORIGINS });
+  const currentlyEnabled = await cbHasAutoScanPermission();
   if (currentlyEnabled) {
     await chrome.permissions.remove({ origins: CB_AUTO_SCAN_ORIGINS });
     await chrome.runtime.sendMessage({ target: "background", type: "SET_AUTO_SCAN", enabled: false });
@@ -264,21 +283,33 @@ notifyList.addEventListener("change", async (e) => {
 // aufzurufen.
 
 const mutedList = document.getElementById("mutedList");
+const mutedHead = document.getElementById("mutedHead");
+const mutedCount = document.getElementById("mutedCount");
+const mutedFilter = document.getElementById("mutedFilter");
+const mutedClearAll = document.getElementById("mutedClearAll");
 
-async function refreshMutedUi() {
-  const { always, session } = await readMutedHosts();
-  const entries = [
-    ...[...always].sort().map((host) => ({ host, temporary: false })),
-    ...[...session].sort().map((host) => ({ host, temporary: true })),
-  ];
+// Ab hier lohnt sich das Filterfeld - darunter sieht man ohnehin alle Zeilen
+// auf einen Blick, und ein leeres Suchfeld waere nur Beiwerk. Die Liste selbst
+// bekommt in CSS einen Hoehendeckel und scrollt danach in sich.
+const MUTED_FILTER_THRESHOLD = 8;
+
+let mutedEntries = [];
+
+function renderMutedList() {
+  const needle = mutedFilter.value.trim().toLowerCase();
+  const shown = needle ? mutedEntries.filter((e) => e.host.includes(needle)) : mutedEntries;
 
   mutedList.innerHTML = "";
-  if (entries.length === 0) {
+  if (mutedEntries.length === 0) {
     mutedList.appendChild(el("p", { className: "muted-empty", textContent: t("optionsMutedNone") }));
     return;
   }
+  if (shown.length === 0) {
+    mutedList.appendChild(el("p", { className: "muted-empty", textContent: t("optionsMutedNoMatch") }));
+    return;
+  }
 
-  entries.forEach(({ host, temporary }) => {
+  shown.forEach(({ host, temporary }) => {
     const row = el("div", { className: "muted-row" });
     row.appendChild(el("span", { className: "muted-host", textContent: host }));
     if (temporary) {
@@ -297,6 +328,53 @@ async function refreshMutedUi() {
     mutedList.appendChild(row);
   });
 }
+
+async function refreshMutedUi() {
+  const { always, session } = await readMutedHosts();
+  mutedEntries = [
+    ...[...always].sort().map((host) => ({ host, temporary: false })),
+    ...[...session].sort().map((host) => ({ host, temporary: true })),
+  ];
+
+  const count = mutedEntries.length;
+  mutedHead.hidden = count === 0;
+  mutedCount.textContent = count === 1 ? t("optionsMutedCountOne") : t("optionsMutedCount", [String(count)]);
+  mutedFilter.hidden = count < MUTED_FILTER_THRESHOLD;
+  if (mutedFilter.hidden) mutedFilter.value = "";
+  resetClearAll();
+
+  renderMutedList();
+}
+
+mutedFilter.addEventListener("input", renderMutedList);
+
+// Zweistufig statt Dialog: der erste Klick fragt nach, der zweite raeumt.
+// Eine lange Liste von Hand zurueckzunehmen waere muehsam, sie versehentlich
+// zu verlieren aber auch aergerlich.
+let clearAllArmed = false;
+
+function resetClearAll() {
+  clearAllArmed = false;
+  mutedClearAll.textContent = t("optionsMutedClearAllBtn");
+  mutedClearAll.classList.remove("armed");
+}
+
+mutedClearAll.addEventListener("click", async () => {
+  if (!clearAllArmed) {
+    clearAllArmed = true;
+    mutedClearAll.textContent = t("optionsMutedClearAllConfirm");
+    mutedClearAll.classList.add("armed");
+    return;
+  }
+  await clearSiteMutes();
+  await refreshMutedUi();
+});
+
+// Klick woanders hin nimmt die Nachfrage zurueck - so bleibt der scharfe
+// Zustand nicht unbemerkt stehen, bis man das naechste Mal hinsieht.
+document.addEventListener("click", (e) => {
+  if (clearAllArmed && e.target !== mutedClearAll) resetClearAll();
+});
 
 // --- Views ----------------------------------------------------------------
 

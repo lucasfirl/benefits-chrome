@@ -3,7 +3,7 @@
     "message": "CB Deal Finder"
   },
   "appDescription": {
-    "message": "Durchsucht die Website, die du gerade besuchst, nach passenden Angeboten aus deinem Mitarbeiterportal. Inoffiziell – steht in keiner Verbindung zur corporate benefits Germany GmbH."
+    "message": "Durchsucht die Website, die Sie gerade besuchen, nach passenden Angeboten aus Ihrem Mitarbeiterportal. Inoffiziell – steht in keiner Verbindung zur corporate benefits Germany GmbH."
   },
   "popupWordmark": {
     "message": "Deal Finder"
@@ -45,16 +45,16 @@
     }
   },
   "popupNoMatchBody": {
-    "message": "Kein Angebot in deinem Katalog passt zu dieser Seite. Suche von Hand, wenn du eines erwartet hast."
+    "message": "Kein Angebot in Ihrem Katalog passt zu dieser Seite. Suchen Sie von Hand, wenn Sie eines erwartet haben."
   },
   "popupNoPortalStep": {
-    "message": "Schritt 1 von 1"
+    "message": "Einmalige Einrichtung"
   },
   "popupNoPortalHeading": {
-    "message": "Sag der Erweiterung, wo dein Portal liegt"
+    "message": "Sagen Sie der Erweiterung, wo Ihr Portal liegt"
   },
   "popupNoPortalBody": {
-    "message": "Jeder Arbeitgeber hat seine eigene Adresse. Einmal eintragen – danach zählt das Symbol die Angebote auf den Seiten, die du besuchst."
+    "message": "Jeder Arbeitgeber hat seine eigene Adresse. Einmal eintragen – danach zählt das Symbol die Angebote auf den Seiten, die Sie besuchen."
   },
   "popupNoPortalBtn": {
     "message": "Einrichten"
@@ -63,10 +63,10 @@
     "message": "Zugriff nötig"
   },
   "popupNoPermissionHeading": {
-    "message": "Zugriff auf dein Portal bestätigen"
+    "message": "Zugriff auf Ihr Portal bestätigen"
   },
   "popupNoPermissionBody": {
-    "message": "Die Erweiterung darf nur die eine Domain lesen, die du bestätigst. Mehr wird nicht angefragt."
+    "message": "Die Erweiterung darf nur die eine Domain lesen, die Sie bestätigen. Mehr wird nicht angefragt."
   },
   "popupGrantAccessBtn": {
     "message": "Zugriff erlauben"
@@ -75,10 +75,10 @@
     "message": "Sitzung beendet"
   },
   "popupNotLoggedInHeading": {
-    "message": "Melde dich im Portal an, um Angebote zu sehen"
+    "message": "Melden Sie sich im Portal an, um Angebote zu sehen"
   },
   "popupNotLoggedInBody": {
-    "message": "Angebote werden mit der Anmeldung gelesen, die du in diesem Browser ohnehin hast – ein Passwort wird hier nie gespeichert."
+    "message": "Angebote werden mit der Anmeldung gelesen, die Sie in diesem Browser ohnehin haben – ein Passwort wird hier nie gespeichert."
   },
   "popupOpenPortalBtn": {
     "message": "Portal öffnen"
@@ -93,7 +93,7 @@
     "message": "Für diese Seite gibt es keine Deals zu finden."
   },
   "popupDefaultHint": {
-    "message": "Öffne eine Website, um sie nach Angeboten zu durchsuchen."
+    "message": "Öffnen Sie eine Website, um sie nach Angeboten zu durchsuchen."
   },
   "popupErrorChip": {
     "message": "Fehler"
@@ -102,7 +102,7 @@
     "message": "Portal nicht erreichbar"
   },
   "popupErrorNotice": {
-    "message": "Beim Prüfen deines Portals ist ein Fehler aufgetreten: $ERROR$",
+    "message": "Beim Prüfen Ihres Portals ist ein Fehler aufgetreten: $ERROR$",
     "placeholders": {
       "error": {
         "content": "$1"
@@ -130,13 +130,13 @@
     "message": "1 Treffer · live gesucht"
   },
   "popupManualErrNotLoggedIn": {
-    "message": "Du bist nicht bei deinem CB-Portal angemeldet."
+    "message": "Sie sind nicht bei Ihrem CB-Portal angemeldet."
   },
   "popupManualErrNoPermission": {
-    "message": "Erlaube zuerst den Zugriff auf das Portal (siehe oben)."
+    "message": "Erlauben Sie zuerst den Zugriff auf das Portal (siehe oben)."
   },
   "popupManualErrNoPortal": {
-    "message": "Trage zuerst deine CB-Portal-URL in den Einstellungen ein."
+    "message": "Tragen Sie zuerst Ihre CB-Portal-URL in den Einstellungen ein."
   },
   "popupManualErrGeneric": {
     "message": "Suche fehlgeschlagen."
@@ -207,7 +207,7 @@
     "message": "Status"
   },
   "optionsStatusWorking": {
-    "message": "Läuft"
+    "message": "Aktiv"
   },
   "optionsStatusNeedsSetup": {
     "message": "Einrichtung nötig"
@@ -266,7 +266,7 @@
     "message": "noch keiner"
   },
   "optionsPanelNote": {
-    "message": "Der Katalog wird einmal pro Woche geladen; jeder Abgleich danach passiert auf deinem Rechner. Deshalb kostet auch ein langer Surftag das Portal nichts."
+    "message": "Der Katalog wird einmal pro Woche geladen; jeder Abgleich danach passiert auf Ihrem Rechner. Deshalb kostet auch ein langer Surftag das Portal nichts."
   },
   "optionsPortalRowTitle": {
     "message": "Portaladresse"
@@ -275,16 +275,16 @@
     "message": "Einmal pro Installation. Die Bestätigung erlaubt den Zugriff auf genau diese eine Domain – nicht mehr."
   },
   "optionsInputPlaceholder": {
-    "message": "deinefirma.mitarbeiterangebote.de"
+    "message": "ihrefirma.mitarbeiterangebote.de"
   },
   "optionsSaveBtn": {
     "message": "Speichern"
   },
   "optionsStatusInvalid": {
-    "message": "Bitte gib eine gültige Portaladresse ein."
+    "message": "Bitte geben Sie eine gültige Portaladresse ein."
   },
   "optionsStatusNotGranted": {
-    "message": "Der Zugriff wurde nicht erteilt – die Erweiterung erreicht dein Portal noch nicht."
+    "message": "Der Zugriff wurde nicht erteilt – die Erweiterung erreicht Ihr Portal noch nicht."
   },
   "optionsStatusSavedGranted": {
     "message": "Gespeichert, Zugriff erteilt."
@@ -305,7 +305,7 @@
     "message": "Angebote werden auf jeder besuchten Seite gesucht."
   },
   "optionsAutoScanOffDesc": {
-    "message": "Öffne das Popup von Hand, um nach Angeboten zu suchen."
+    "message": "Öffnen Sie das Popup von Hand, um nach Angeboten zu suchen."
   },
   "optionsAsksPermission": {
     "message": "Fragt nach Berechtigung"
@@ -349,11 +349,34 @@
   "optionsMutedRemoveBtn": {
     "message": "Wieder einschalten"
   },
+  "optionsMutedCount": {
+    "message": "$N$ Seiten",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsMutedCountOne": {
+    "message": "1 Seite"
+  },
+  "optionsMutedFilterPlaceholder": {
+    "message": "Seite suchen"
+  },
+  "optionsMutedNoMatch": {
+    "message": "Keine Seite passt dazu."
+  },
+  "optionsMutedClearAllBtn": {
+    "message": "Alle wieder einschalten"
+  },
+  "optionsMutedClearAllConfirm": {
+    "message": "Wirklich alle?"
+  },
   "optionsCatalogHeading": {
     "message": "Angebotskatalog"
   },
   "optionsCatalogRowDesc": {
-    "message": "Markennamen sind stabil, Rabatthöhen nicht. Erneuere den Katalog, wenn eine Zahl falsch aussieht."
+    "message": "Markennamen sind stabil, Rabatthöhen nicht. Erneuern Sie den Katalog, wenn eine Zahl falsch aussieht."
   },
   "optionsCatalogOffers": {
     "message": "$COUNT$ Angebote",
@@ -392,13 +415,13 @@
     "message": "Katalog wird geladen…"
   },
   "optionsCatalogErrNotLoggedIn": {
-    "message": "Nicht im Portal angemeldet – melde dich dort zuerst an."
+    "message": "Nicht im Portal angemeldet – melden Sie sich dort zuerst an."
   },
   "optionsCatalogErrNoPermission": {
-    "message": "Erlaube zuerst den Zugriff auf das Portal (oben)."
+    "message": "Erlauben Sie zuerst den Zugriff auf das Portal (oben)."
   },
   "optionsCatalogErrNoPortal": {
-    "message": "Trage zuerst deine Portal-URL ein (oben)."
+    "message": "Tragen Sie zuerst Ihre Portal-URL ein (oben)."
   },
   "optionsCatalogErrGeneric": {
     "message": "Katalog-Aktualisierung fehlgeschlagen."
@@ -410,22 +433,22 @@
     "message": "Vollständig erhalten, aber den Einstellungen aus dem Weg."
   },
   "optionsHowLi1": {
-    "message": "Du musst in diesem Browser bereits bei deinem CB-Portal angemeldet sein – die Erweiterung nutzt diese Sitzung und sieht oder speichert dein Passwort nie."
+    "message": "Sie müssen in diesem Browser bereits bei Ihrem CB-Portal angemeldet sein – die Erweiterung nutzt diese Sitzung und sieht oder speichert Ihr Passwort nie."
   },
   "optionsHowLi2": {
     "message": "Beim Besuch einer Website rät die Erweiterung anhand der Domain einen Markennamen und gleicht ihn mit dem lokalen Katalog ab."
   },
   "optionsHowLi3": {
-    "message": "Es wird nichts irgendwohin gesendet außer Anfragen an das Portal, das du hier freigibst."
+    "message": "Es wird nichts irgendwohin gesendet außer Anfragen an das Portal, das Sie hier freigeben."
   },
   "setupEyebrow": {
     "message": "Einmalige Einrichtung"
   },
   "setupHeading": {
-    "message": "Wo meldest du dich für Mitarbeiterangebote an?"
+    "message": "Wo melden Sie sich für Mitarbeiterangebote an?"
   },
   "setupLede": {
-    "message": "Jeder Arbeitgeber hat seine eigene Portaladresse. Trage deine ein und bestätige die Abfrage – das erlaubt den Zugriff auf genau diese eine Domain, nicht mehr. Dein Passwort bekommt die Erweiterung nie zu sehen."
+    "message": "Jeder Arbeitgeber hat seine eigene Portaladresse. Tragen Sie Ihre ein und bestätigen Sie die Abfrage – das erlaubt den Zugriff auf genau diese eine Domain, nicht mehr. Ihr Passwort bekommt die Erweiterung nie zu sehen."
   },
   "setupContinue": {
     "message": "Weiter"
@@ -446,7 +469,7 @@
     "message": "Surfen"
   },
   "setupStep3Desc": {
-    "message": "Das Symbol zählt die Angebote zur Seite, auf der du bist."
+    "message": "Das Symbol zählt die Angebote zur Seite, auf der Sie sind."
   },
   "setupFootnote": {
     "message": "Inoffiziell · steht in keiner Verbindung zur corporate benefits Germany GmbH, wird von ihr weder betrieben noch unterstützt."
@@ -463,10 +486,10 @@
     }
   },
   "notifyOneDeal": {
-    "message": "Ein Angebot wartet in deinem Portal auf die Seite, die du gerade liest."
+    "message": "Ein Angebot wartet in Ihrem Portal auf die Seite, die Sie gerade lesen."
   },
   "notifyMultipleDeals": {
-    "message": "$COUNT$ Angebote warten in deinem Portal auf die Seite, die du gerade liest.",
+    "message": "$COUNT$ Angebote warten in Ihrem Portal auf die Seite, die Sie gerade lesen.",
     "placeholders": {
       "count": {
         "content": "$1"
@@ -534,12 +557,12 @@
     "message": "Dies ist ein privates, inoffizielles Werkzeug. Es steht in keiner Verbindung zur corporate benefits Germany GmbH, wird von ihr weder betrieben noch unterstützt oder geprüft. Alle Marken-, Produktnamen und Logos gehören ihren jeweiligen Eigentümern."
   },
   "disclaimerServerLoad": {
-    "message": "Der Angebotskatalog wird bewusst nur einmal pro Woche geladen – gestaffelt statt in einem Schwall – und der gesamte Abgleich danach passiert lokal in deinem Browser. Das geschieht ausdrücklich, um die Last auf den Servern von corporate benefits so gering wie möglich zu halten: statt einer Suchanfrage bei jedem Seitenaufruf gibt es nur eine Handvoll Anfragen pro Woche."
+    "message": "Der Angebotskatalog wird bewusst nur einmal pro Woche geladen – gestaffelt statt in einem Schwall – und der gesamte Abgleich danach passiert lokal in Ihrem Browser. Das geschieht ausdrücklich, um die Last auf den Servern von corporate benefits so gering wie möglich zu halten: statt einer Suchanfrage bei jedem Seitenaufruf gibt es nur eine Handvoll Anfragen pro Woche."
   },
   "disclaimerAccuracy": {
     "message": "Die Rabattangaben stammen aus dem lokal zwischengespeicherten Katalog und können veraltet sein. Maßgeblich ist allein die Angebotsseite im Portal selbst. Keine Gewähr, keine Haftung."
   },
   "disclaimerConfidential": {
-    "message": "Die Angebote und Rabattcodes unterliegen den Nutzungsbedingungen deines Portals und sind vertraulich. Sie sind nur für berechtigte Mitarbeitende bestimmt und dürfen nicht an Dritte weitergegeben oder veröffentlicht werden."
+    "message": "Die Angebote und Rabattcodes unterliegen den Nutzungsbedingungen Ihres Portals und sind vertraulich. Sie sind nur für berechtigte Mitarbeitende bestimmt und dürfen nicht an Dritte weitergegeben oder veröffentlicht werden."
   }
 }

@@ -48,7 +48,7 @@
     "message": "No offer in your catalogue matches this site. Search by hand if you expected one."
   },
   "popupNoPortalStep": {
-    "message": "Step 1 of 1"
+    "message": "One-time setup"
   },
   "popupNoPortalHeading": {
     "message": "Tell it where your portal lives"
@@ -348,6 +348,29 @@
   },
   "optionsMutedRemoveBtn": {
     "message": "Turn back on"
+  },
+  "optionsMutedCount": {
+    "message": "$N$ sites",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsMutedCountOne": {
+    "message": "1 site"
+  },
+  "optionsMutedFilterPlaceholder": {
+    "message": "Find a site"
+  },
+  "optionsMutedNoMatch": {
+    "message": "No site matches that."
+  },
+  "optionsMutedClearAllBtn": {
+    "message": "Turn all back on"
+  },
+  "optionsMutedClearAllConfirm": {
+    "message": "Really all?"
   },
   "optionsCatalogHeading": {
     "message": "Offer catalogue"
