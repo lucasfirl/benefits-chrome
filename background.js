@@ -718,6 +718,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     (async () => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab) return sendResponse({ ok: false });
+      // Nur der bewusste Klick hebt die Sperren auf. Das Popup stoesst beim
+      // Oeffnen selbst einen Rescan an - der darf die Wartezeit nicht
+      // umgehen, sonst fragt jedes Popup-Oeffnen wieder das Portal.
+      if (message.userAction) clearCooldowns();
       await scanTab(tab.id, tab.url, message.hints, nextScanId(tab.id));
       sendResponse({ ok: true });
     })();

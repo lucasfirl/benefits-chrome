@@ -175,7 +175,7 @@ function render(state) {
               onClick: async () => {
                 const granted = await chrome.permissions.request({ origins: [state.portalOrigin + "/*"] });
                 if (granted) {
-                  await chrome.runtime.sendMessage({ target: "background", type: "RESCAN" });
+                  await chrome.runtime.sendMessage({ target: "background", type: "RESCAN", userAction: true });
                   main();
                 }
               },
@@ -198,7 +198,7 @@ function render(state) {
               label: t("popupTryAgainBtn"),
               secondary: true,
               onClick: async () => {
-                await chrome.runtime.sendMessage({ target: "background", type: "RESCAN" });
+                await chrome.runtime.sendMessage({ target: "background", type: "RESCAN", userAction: true });
                 main();
               },
             },
