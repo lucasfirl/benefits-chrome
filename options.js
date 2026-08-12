@@ -189,28 +189,100 @@ catalogRefreshBtn.addEventListener("click", async () => {
 // --- Portal address -------------------------------------------------------
 
 /**
- * Speichert die Portaladresse und fragt die Berechtigung dafuer an.
+ * Entscheidet, ob eine gepruefte Adresse uebernommen werden darf.
+ * "not-logged-in" zaehlt als gut genug: das Portal steht, nur die Sitzung
+ * fehlt - daran ist die Adresse unschuldig.
+ */
+function probeAcceptsOrigin(res) {
+  return !!res && (res.ok === true || res.error === "not-logged-in");
+}
+
+/**
+ * Zeigt das Ergebnis der Probeanfrage an. Eine syntaktisch gueltige Adresse
+ * sagt nichts darueber, ob dort auch ein Portal steht - ohne diese Anzeige
+ * meldete die Seite selbst bei einem Tippfehler im Firmennamen "Gespeichert,
+ * Zugriff erteilt" und schwieg dann.
+ */
+function applyProbeStatus(node, res, origin) {
+  if (res && res.ok) {
+    setFieldStatus(node, t("optionsStatusSavedReachable", [String(res.categories)]), "success");
+    return;
+  }
+  const error = res && res.error;
+  if (error === "not-logged-in") {
+    setFieldStatus(node, t("optionsStatusSavedNotLoggedIn"), "warn", origin);
+    return;
+  }
+  const key =
+    error === "unreachable"
+      ? "optionsStatusRejectedUnreachable"
+      : error === "not-a-portal"
+      ? "optionsStatusRejectedNotAPortal"
+      : "optionsStatusRejectedUnchecked";
+  setFieldStatus(node, t(key), "error");
+}
+
+/**
+ * Prueft die Portaladresse und uebernimmt sie nur, wenn dort auch ein Portal
+ * antwortet. Reihenfolge ist wesentlich: wuerden wir vor der Pruefung
+ * speichern, verdraengte ein Tippfehler die funktionierende Adresse samt
+ * Katalog - der Fehlertext kaeme dann zu spaet.
  * Beide Formulare (Ersteinrichtung und Einstellungen) laufen hier zusammen.
  */
 async function savePortal(value, statusNode) {
   const origin = normalizePortalInput(value);
   if (!origin) {
     setFieldStatus(statusNode, t("optionsStatusInvalid"), "error");
-    return false;
+    return null;
   }
 
+  const stored = await chrome.storage.sync.get(CB_STORAGE_KEY);
+  const previous = stored[CB_STORAGE_KEY] || null;
+
+  // Die Berechtigung muss vor der Pruefung stehen - ohne sie darf die
+  // Erweiterung die Adresse gar nicht erst anfragen. Sie braucht ausserdem
+  // die Nutzergeste, ist also im ersten await gut aufgehoben.
   const granted = await chrome.permissions.request({ origins: [origin + "/*"] });
   if (!granted) {
     setFieldStatus(statusNode, t("optionsStatusNotGranted"), "error");
-    return false;
+    return null;
+  }
+
+  setFieldStatus(statusNode, t("optionsStatusChecking"), "");
+
+  // Eine einzelne Anfrage - der volle Sync folgt nur, wenn sie geklappt hat.
+  let probe = null;
+  try {
+    probe = await chrome.runtime.sendMessage({
+      target: "background",
+      type: "PROBE_PORTAL",
+      portalOrigin: origin,
+    });
+  } catch (err) {
+    probe = null;
+  }
+
+  if (!probeAcceptsOrigin(probe)) {
+    // Nichts anfassen: die alte Adresse bleibt stehen. Die eben erteilte
+    // Berechtigung wieder abgeben, sonst sammelte jeder Tippfehler dauerhaft
+    // Zugriff auf eine fremde Domain an - genau das Versprechen ("genau diese
+    // eine Domain") waere gebrochen.
+    if (origin !== previous) {
+      await chrome.permissions.remove({ origins: [origin + "/*"] }).catch(() => {});
+    }
+    applyProbeStatus(statusNode, probe, origin);
+    return null;
   }
 
   await chrome.storage.sync.set({ [CB_STORAGE_KEY]: origin });
-  setFieldStatus(statusNode, t("optionsStatusSavedGranted"), "success");
-  // Frisch berechtigt: gleich den Katalog holen, damit die Erweiterung nicht
-  // erst beim naechsten Seitenaufruf zu arbeiten anfaengt.
-  chrome.runtime.sendMessage({ target: "background", type: "SYNC_CATALOG" }).catch(() => {});
-  return true;
+  applyProbeStatus(statusNode, probe, origin);
+
+  if (probe.ok) {
+    // Frisch berechtigt: gleich den Katalog holen, damit die Erweiterung nicht
+    // erst beim naechsten Seitenaufruf zu arbeiten anfaengt.
+    chrome.runtime.sendMessage({ target: "background", type: "SYNC_CATALOG" }).catch(() => {});
+  }
+  return { origin, probe };
 }
 
 portalForm.addEventListener("submit", async (e) => {
@@ -222,10 +294,11 @@ portalForm.addEventListener("submit", async (e) => {
 
 setupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (await savePortal(setupInput.value, setupStatus)) {
-    portalInput.value = hostOfOrigin(normalizePortalInput(setupInput.value));
+  const saved = await savePortal(setupInput.value, setupStatus);
+  if (saved) {
+    portalInput.value = hostOfOrigin(saved.origin);
     await showSettingsView();
-    setFieldStatus(portalStatus, t("optionsStatusSavedGranted"), "success");
+    applyProbeStatus(portalStatus, saved.probe, saved.origin);
   }
 });
 

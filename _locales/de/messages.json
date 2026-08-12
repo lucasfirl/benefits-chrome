@@ -327,8 +327,29 @@
   "optionsStatusNotGranted": {
     "message": "Der Zugriff wurde nicht erteilt – die Erweiterung erreicht Ihr Portal noch nicht."
   },
-  "optionsStatusSavedGranted": {
-    "message": "Gespeichert, Zugriff erteilt."
+  "optionsStatusChecking": {
+    "message": "Portal wird geprüft …"
+  },
+  "optionsStatusSavedReachable": {
+    "message": "Gespeichert. Portal erreicht, $CATEGORIES$ Kategorien gefunden.",
+    "placeholders": {
+      "categories": {
+        "content": "$1",
+        "example": "13"
+      }
+    }
+  },
+  "optionsStatusSavedNotLoggedIn": {
+    "message": "Portal erreicht, aber Sie sind dort nicht angemeldet."
+  },
+  "optionsStatusRejectedUnreachable": {
+    "message": "Nicht übernommen: Unter dieser Adresse antwortet kein Portal – bitte Schreibweise prüfen."
+  },
+  "optionsStatusRejectedNotAPortal": {
+    "message": "Nicht übernommen: Die Adresse antwortet, sieht aber nicht nach einem CB-Portal aus."
+  },
+  "optionsStatusRejectedUnchecked": {
+    "message": "Nicht übernommen: Die Prüfung ist fehlgeschlagen. Die bisherige Adresse bleibt bestehen."
   },
   "optionsAutoScanHeading": {
     "message": "Angebote automatisch finden"

@@ -327,8 +327,29 @@
   "optionsStatusNotGranted": {
     "message": "Access wasn't granted, so the extension can't reach your portal yet."
   },
-  "optionsStatusSavedGranted": {
-    "message": "Saved and access granted."
+  "optionsStatusChecking": {
+    "message": "Checking the portal …"
+  },
+  "optionsStatusSavedReachable": {
+    "message": "Saved. Portal reached, found $CATEGORIES$ categories.",
+    "placeholders": {
+      "categories": {
+        "content": "$1",
+        "example": "13"
+      }
+    }
+  },
+  "optionsStatusSavedNotLoggedIn": {
+    "message": "Portal reached, but you are not signed in there."
+  },
+  "optionsStatusRejectedUnreachable": {
+    "message": "Not applied: no portal answers at this address — please check the spelling."
+  },
+  "optionsStatusRejectedNotAPortal": {
+    "message": "Not applied: the address answers but does not look like a CB portal."
+  },
+  "optionsStatusRejectedUnchecked": {
+    "message": "Not applied: the check failed. Your previous address stays in place."
   },
   "optionsAutoScanHeading": {
     "message": "Find deals automatically"
