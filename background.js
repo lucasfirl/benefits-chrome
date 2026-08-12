@@ -387,18 +387,46 @@ async function scanTab(tabId, url, extraCandidates, scanId) {
 
 /**
  * Fetches a path from the portal using the user's existing session.
- * Returns "not-logged-in" if the portal redirected to its login page.
+ * Returns "not-logged-in" if the portal redirected us away from the
+ * requested page - to its login form, to another tenant's domain, or
+ * back to the start page. Portale melden eine abgelaufene Sitzung nicht
+ * einheitlich; ohne diese Pruefung haetten wir jede Umleitung als
+ * gueltige (aber leere) Seite geparst und den Katalog stillschweigend
+ * als "keine Angebote" abgehakt.
  */
 async function fetchPortalHtml(portalOrigin, path) {
-  const url = portalOrigin.replace(/\/+$/, "") + path;
+  const base = portalOrigin.replace(/\/+$/, "");
+  const url = base + path;
   const response = await fetch(url, { credentials: "include", redirect: "follow" });
-  if (response.redirected && /\/login(\?|$)/.test(new URL(response.url).pathname)) {
+  if (response.redirected && isLoggedOutRedirect(base, path, response.url)) {
     return "not-logged-in";
   }
   if (!response.ok) {
     throw new Error("Portal returned HTTP " + response.status);
   }
   return response.text();
+}
+
+/**
+ * Decides whether a followed redirect means "session gone" rather than a
+ * harmless canonical redirect (z. B. Trailing-Slash oder http -> https).
+ */
+function isLoggedOutRedirect(base, requestedPath, finalUrl) {
+  let final;
+  let origin;
+  try {
+    final = new URL(finalUrl);
+    origin = new URL(base);
+  } catch (err) {
+    return false;
+  }
+  // Anderer Mandant / andere Domain -> unsere Sitzung gilt dort nicht.
+  if (final.origin !== origin.origin) return true;
+  if (/\/(login|signin|anmelden|logout)(\/|\?|$)/i.test(final.pathname)) return true;
+  // Unterseite -> Startseite ist die uebliche stille Abweisung.
+  const wanted = requestedPath.split("?")[0].replace(/\/+$/, "");
+  const landed = final.pathname.replace(/\/+$/, "");
+  return wanted !== "" && landed === "";
 }
 
 /**
