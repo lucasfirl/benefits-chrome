@@ -746,6 +746,41 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  // Einzelne Probeanfrage nach dem Speichern der Portaladresse. Ein voller
+  // Sync dauert ueber zwanzig Sekunden - viel zu lang fuer eine Rueckmeldung
+  // am Eingabefeld. Hier zaehlt nur: Antwortet dort ueberhaupt ein Portal,
+  // fuer das wir angemeldet sind?
+  if (message.type === "PROBE_PORTAL") {
+    (async () => {
+      const portalOrigin = message.portalOrigin || (await getPortalOrigin());
+      if (!portalOrigin) return sendResponse({ ok: false, error: "no-portal" });
+      if (!(await hasPortalPermission(portalOrigin))) {
+        return sendResponse({ ok: false, error: "no-permission" });
+      }
+      let html;
+      try {
+        html = await fetchPortalHtml(portalOrigin, "/");
+      } catch (err) {
+        // Unbekannter Host, kein DNS, kein Zertifikat, HTTP-Fehler.
+        return sendResponse({ ok: false, error: "unreachable", detail: String(err), portalOrigin });
+      }
+      if (html === "not-logged-in") {
+        return sendResponse({ ok: false, error: "not-logged-in", portalOrigin });
+      }
+      try {
+        const { categoryIds } = await askOffscreen("PARSE_CATEGORY_IDS", { html });
+        if (!categoryIds || categoryIds.length === 0) {
+          // Erreichbar, aber ohne Kategorien - das ist kein CB-Portal.
+          return sendResponse({ ok: false, error: "not-a-portal", portalOrigin });
+        }
+        sendResponse({ ok: true, categories: categoryIds.length, portalOrigin });
+      } catch (err) {
+        sendResponse({ ok: false, error: "unreachable", detail: String(err), portalOrigin });
+      }
+    })();
+    return true;
+  }
+
   if (message.type === "SYNC_CATALOG") {
     (async () => {
       try {
