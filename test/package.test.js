@@ -116,7 +116,7 @@ if (unusedEntries.length === 0) {
 }
 
 // Sicherheitsnetz: Dateien, die NIE ins Paket duerfen
-const forbidden = ["README.md", "PRIVACY.md", "STORE-LISTING.md", "package.ps1", "test", "dist", "docs", ".playwright-mcp"];
+const forbidden = ["README.md", "PRIVACY.md", "STORE-LISTING.md", "package.ps1", "test", "dist", ".playwright-mcp"];
 const leaked = forbidden.filter((f) => covers(f));
 if (leaked.length === 0) {
   console.log("PASS  keine Doku-/Test-/Schluesseldateien von der Allowlist erfasst");

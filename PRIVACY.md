@@ -2,9 +2,8 @@
 
 _Last updated: 13 August 2026_
 
-> Hosted version (use this URL for the Chrome Web Store listing):
-> <https://lucasfirl.github.io/benefits-chrome/privacy.html> — source in
-> [`docs/privacy.html`](docs/privacy.html). Keep the two in step when editing.
+> Public URL for the Chrome Web Store listing:
+> <https://github.com/lucasfirl/benefits-chrome/blob/main/PRIVACY.md>
 
 CB Deal Finder is a private, unofficial browser extension. It is not
 affiliated with, operated by, or endorsed by corporate benefits Germany GmbH

@@ -9,8 +9,7 @@ your browser, and decides every match locally. UI in English or German,
 auto-selected from your browser's language.
 
 **→ [Add to Chrome](https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj) ·
-[Project page](https://lucasfirl.github.io/benefits-chrome/) ·
-[Privacy policy](https://lucasfirl.github.io/benefits-chrome/privacy.html) ·
+[Privacy policy](PRIVACY.md) ·
 [Releases](https://github.com/lucasfirl/benefits-chrome/releases/latest)**
 
 > Private, unofficial tool. Not affiliated with, operated by, endorsed by or
@@ -172,7 +171,6 @@ justifications, reviewer notes — are in [`STORE-LISTING.md`](STORE-LISTING.md)
 | `src/theme.css`, `src/fonts/` | Shared design tokens; IBM Plex bundled locally so the UI makes no outbound request. |
 | `src/_locales/en`, `/de` | UI text; Chrome picks by browser language, falling back to English. |
 | `package.ps1` | Build script — packs `src/` into `dist/cb-deal-finder-<version>.zip`. |
-| `docs/` | The GitHub Pages site (project page + hosted privacy policy). |
 | `test/` | See below. |
 
 ### Tests

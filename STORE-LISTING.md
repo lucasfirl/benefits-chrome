@@ -102,14 +102,14 @@ liability.
 Productivity (oder Shopping)
 
 ### Datenschutzerklärung-URL
-Pflichtfeld, gehostet über GitHub Pages aus `docs/`:
+Pflichtfeld. Seit das Repository öffentlich ist, genügt die Datei selbst:
 
 ```
-https://lucasfirl.github.io/benefits-chrome/privacy.html
+https://github.com/lucasfirl/benefits-chrome/blob/main/PRIVACY.md
 ```
 
-Quelle: `docs/privacy.html`, inhaltsgleich mit `PRIVACY.md` — bei Änderungen
-beide anfassen.
+Kein eigener Hoster nötig, und keine zweite Fassung, die auseinanderlaufen
+kann.
 
 ---
 
