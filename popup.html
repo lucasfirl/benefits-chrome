@@ -36,8 +36,15 @@
   <!-- Automatisches Melden fuer genau diese Seite: an, bis Browserende aus,
        oder dauerhaft aus. -->
   <div id="autoBar" hidden>
-    <span id="autoBarLabel"></span>
-    <div id="autoBarSeg" class="seg" role="group"></div>
+    <div class="auto-row">
+      <span id="autoBarLabel"></span>
+      <div id="autoBarSeg" class="seg" role="group"></div>
+    </div>
+    <!-- Umfang: nur dieser Host oder die ganze Domain samt Unterseiten. -->
+    <div class="auto-row">
+      <span class="auto-scope-label" data-i18n="popupScopeLabel">Applies to</span>
+      <div id="autoBarScope" class="seg scope" role="group"></div>
+    </div>
   </div>
 
   <div id="catalogBar">

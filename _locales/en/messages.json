@@ -168,6 +168,47 @@
   "popupAutoStateAlways": {
     "message": "Off here for good"
   },
+  "popupAutoStateSessionPattern": {
+    "message": "Off until the browser closes: $PATTERN$",
+    "placeholders": {
+      "pattern": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupAutoStateAlwaysPattern": {
+    "message": "Off for good: $PATTERN$",
+    "placeholders": {
+      "pattern": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupScopeLabel": {
+    "message": "Applies to"
+  },
+  "popupScopeHost": {
+    "message": "This site"
+  },
+  "popupScopeHostTitle": {
+    "message": "$HOST$ only",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupScopeDomain": {
+    "message": "Whole domain"
+  },
+  "popupScopeDomainTitle": {
+    "message": "$DOMAIN$ and every subdomain",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
   "popupCatalogBar": {
     "message": "$COUNT$ offers · $AGE$ old",
     "placeholders": {
@@ -341,7 +382,7 @@
     "message": "Sites you switched off"
   },
   "optionsMutedRowDesc": {
-    "message": "Set per site in the popup. The badge still counts there — only the automatic alert stops."
+    "message": "Set per site in the popup, or added here as a pattern. The badge still counts there — only the automatic alert stops."
   },
   "optionsMutedNone": {
     "message": "None — the extension alerts everywhere."
@@ -374,6 +415,37 @@
   },
   "optionsMutedClearAllConfirm": {
     "message": "Really all?"
+  },
+  "optionsMutedAddLabel": {
+    "message": "Add a site or pattern"
+  },
+  "optionsMutedAddBtn": {
+    "message": "Add"
+  },
+  "optionsMutedWildcardHint": {
+    "message": "A * stands in for a name part: *.google.com covers google.com and all its subdomains, google.* covers google.de and google.com."
+  },
+  "optionsMutedAddInvalid": {
+    "message": "That is not a site or pattern — try example.com or *.example.com."
+  },
+  "optionsMutedAddDuplicate": {
+    "message": "$ENTRY$ is already on the list.",
+    "placeholders": {
+      "entry": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsMutedAddDone": {
+    "message": "$ENTRY$ switched off.",
+    "placeholders": {
+      "entry": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsMutedPattern": {
+    "message": "pattern"
   },
   "optionsCatalogHeading": {
     "message": "Offer catalogue"

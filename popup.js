@@ -351,6 +351,7 @@ manualForm.addEventListener("submit", async (e) => {
 const autoBarEl = document.getElementById("autoBar");
 const autoBarLabelEl = document.getElementById("autoBarLabel");
 const autoBarSegEl = document.getElementById("autoBarSeg");
+const autoBarScopeEl = document.getElementById("autoBarScope");
 
 const AUTO_MODES = [
   { mode: "off", label: "popupAutoOn", title: "popupAutoOnTitle", state: "popupAutoStateOn" },
@@ -359,23 +360,81 @@ const AUTO_MODES = [
 ];
 
 let autoBarHost = null;
+// "host" = genau diese Adresse, "domain" = "*.beispiel.de", also samt aller
+// Unterseiten. Grosse Anbieter verteilen sich sonst ueber ein Dutzend Hosts
+// (mail./docs./www.google.com), und jeder wollte einzeln abgeschaltet werden.
+let autoBarScope = "host";
+// Der Eintrag, der die Seite gerade stillstellt. Bei einem Muster ist das nicht
+// der Hostname - und "wieder einschalten" muss dann das Muster loeschen, sonst
+// klickt man ins Leere.
+let autoBarEntry = null;
+
+function autoBarKey() {
+  if (!autoBarHost) return "";
+  return autoBarScope === "domain" ? domainMutePattern(autoBarHost) : autoBarHost;
+}
 
 AUTO_MODES.forEach(({ mode, label, title }) => {
   const btn = el("button", { type: "button", textContent: t(label), title: t(title) });
   btn.dataset.mute = mode;
   btn.addEventListener("click", async () => {
     if (!autoBarHost) return;
-    await setSiteMute(autoBarHost, mode);
-    paintAutoBar(mode);
+    if (mode === "off") {
+      // Was auch immer gerade greift, muss weg - der Hostname allein reicht
+      // nicht, wenn ein Muster dahintersteht.
+      await setSiteMute(autoBarEntry || autoBarKey(), "off");
+    } else {
+      await setSiteMute(autoBarKey(), mode);
+    }
+    await paintAutoBar();
   });
   autoBarSegEl.appendChild(btn);
 });
 
-function paintAutoBar(mode) {
+const AUTO_SCOPES = [
+  { scope: "host", label: "popupScopeHost", title: "popupScopeHostTitle" },
+  { scope: "domain", label: "popupScopeDomain", title: "popupScopeDomainTitle" },
+];
+
+AUTO_SCOPES.forEach(({ scope, label, title }) => {
+  const btn = el("button", { type: "button", textContent: t(label), title: t(title) });
+  btn.dataset.scope = scope;
+  btn.addEventListener("click", async () => {
+    if (!autoBarHost || autoBarScope === scope) return;
+    const previousScope = autoBarScope;
+    autoBarScope = scope;
+    // Steht die Seite schon still, folgt die Sperre dem neuen Umfang, statt
+    // erst beim naechsten Klick auf "Nie" zu wirken.
+    const current = await getSiteMuteMatch(autoBarHost);
+    if (current.mode !== "off") {
+      const previousKey = previousScope === "domain" ? domainMutePattern(autoBarHost) : autoBarHost;
+      // Nur den eigenen Eintrag zuruecknehmen. Ein fremdes Muster (z. B. ein
+      // von Hand gesetztes "google.*") gehoert dem Nutzer, nicht diesem Klick.
+      if (current.entry === previousKey) await setSiteMute(current.entry, "off");
+      await setSiteMute(autoBarKey(), current.mode);
+    }
+    await paintAutoBar();
+  });
+  autoBarScopeEl.appendChild(btn);
+});
+
+async function paintAutoBar() {
+  const { mode, entry } = await getSiteMuteMatch(autoBarHost);
+  autoBarEntry = entry;
+  // Der gesetzte Eintrag bestimmt den angezeigten Umfang - sonst zeigte die
+  // Leiste "nur diese Seite", waehrend in Wahrheit die ganze Domain still ist.
+  if (entry) autoBarScope = isMutePattern(entry) ? "domain" : "host";
+
   const active = AUTO_MODES.find((m) => m.mode === mode) || AUTO_MODES[0];
-  autoBarLabelEl.textContent = t(active.state);
+  autoBarLabelEl.textContent = entry && isMutePattern(entry)
+    ? t(mode === "session" ? "popupAutoStateSessionPattern" : "popupAutoStateAlwaysPattern", [entry])
+    : t(active.state);
+
   autoBarSegEl.querySelectorAll("button").forEach((btn) => {
     btn.setAttribute("aria-pressed", btn.dataset.mute === active.mode ? "true" : "false");
+  });
+  autoBarScopeEl.querySelectorAll("button").forEach((btn) => {
+    btn.setAttribute("aria-pressed", btn.dataset.scope === autoBarScope ? "true" : "false");
   });
 }
 
@@ -392,8 +451,19 @@ async function refreshAutoBar(state) {
     return;
   }
   autoBarHost = host;
+  autoBarScope = "host";
   autoBarEl.hidden = false;
-  paintAutoBar(await getSiteMute(host));
+
+  // Die Umfangsknoepfe tragen die echten Namen - "google.com" sagt mehr als
+  // "ganze Domain", wenn man gerade auf mail.google.com steht.
+  const domainBtn = autoBarScopeEl.querySelector('[data-scope="domain"]');
+  const pattern = domainMutePattern(host);
+  domainBtn.textContent = pattern || t("popupScopeDomain");
+  domainBtn.title = t("popupScopeDomainTitle", [baseDomainOf(host)]);
+  const hostBtn = autoBarScopeEl.querySelector('[data-scope="host"]');
+  hostBtn.title = t("popupScopeHostTitle", [host]);
+
+  await paintAutoBar();
 }
 
 // --- Katalogleiste: Alter anzeigen und manuell erneuern --------------------

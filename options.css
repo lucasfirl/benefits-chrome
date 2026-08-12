@@ -183,6 +183,8 @@ body {
 }
 .field-status.success { color: var(--ok); }
 .field-status.error { color: var(--alert-fg); }
+/* Hinweis, kein Fehler: der Eintrag steht schon auf der Liste. */
+.field-status.warn { color: var(--flag-fg); }
 .field-status svg { flex-shrink: 0; }
 
 /* --- Boxed controls ----------------------------------------------------- */
@@ -293,6 +295,21 @@ body {
 }
 
 /* --- Sites switched off -------------------------------------------------- */
+
+/* Steht zwischen Eingabefeld und Liste: erklaert den Platzhalter dort, wo man
+   ihn eintippt, statt in der Beschreibung der ganzen Zeile. */
+.muted-hint {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 2px 0 14px;
+}
+
+.muted-hint code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink);
+}
 
 .muted-head {
   display: flex;
