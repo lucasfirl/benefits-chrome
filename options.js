@@ -19,6 +19,7 @@ const autoScanChip = document.getElementById("autoScanChip");
 const autoScanStatus = document.getElementById("autoScanStatus");
 
 const notifyList = document.getElementById("notifyList");
+const sourcesList = document.getElementById("sourcesList");
 
 const catalogRefreshBtn = document.getElementById("catalogRefreshBtn");
 const catalogCount = document.getElementById("catalogCount");
@@ -316,6 +317,13 @@ notifyList.addEventListener("change", async (e) => {
   await chrome.storage.sync.set({ [CB_NOTIFY_KEY]: e.target.value });
 });
 
+// --- Woraus der Markenname geraten wird ----------------------------------
+
+sourcesList.addEventListener("change", async (e) => {
+  if (e.target.name !== "matchSources") return;
+  await chrome.storage.sync.set({ [CB_MATCH_SOURCES_KEY]: e.target.value });
+});
+
 // --- Sites with automatic alerts switched off -----------------------------
 //
 // Gesetzt wird das im Popup, je Seite. Hier stehen sie alle beisammen, damit
@@ -463,10 +471,14 @@ function showSetupView() {
 }
 
 async function load() {
-  const stored = await chrome.storage.sync.get([CB_STORAGE_KEY, CB_NOTIFY_KEY]);
+  const stored = await chrome.storage.sync.get([CB_STORAGE_KEY, CB_NOTIFY_KEY, CB_MATCH_SOURCES_KEY]);
   const level = stored[CB_NOTIFY_KEY] || CB_NOTIFY_DEFAULT;
   const radio = notifyList.querySelector(`input[value="${level}"]`);
   if (radio) radio.checked = true;
+
+  const sources = stored[CB_MATCH_SOURCES_KEY] === "domain" ? "domain" : CB_MATCH_SOURCES_DEFAULT;
+  const sourceRadio = sourcesList.querySelector(`input[value="${sources}"]`);
+  if (sourceRadio) sourceRadio.checked = true;
 
   if (stored[CB_STORAGE_KEY]) {
     // Ohne Schema anzeigen - normalizePortalInput() setzt https:// beim

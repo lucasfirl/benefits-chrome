@@ -378,6 +378,24 @@
   "optionsNotifyPopupDesc": {
     "message": "Chrome erlaubt das nur in bestimmten Situationen – sonst wird auf eine Benachrichtigung zurückgefallen."
   },
+  "optionsSourcesHeading": {
+    "message": "Woraus der Markenname geraten wird"
+  },
+  "optionsSourcesRowDesc": {
+    "message": "Die Domain zählt immer. Der Seitentitel findet mehr, kann auf Seiten, die kein Shop sind, aber ein Wort erwischen, das keine Marke ist."
+  },
+  "optionsSourcesBothShort": {
+    "message": "Domain und Seitentitel"
+  },
+  "optionsSourcesBothDesc": {
+    "message": "Findet auch Marken, deren Domain sich nicht in Wörter zerlegen lässt, etwa easyairportparking.de. Ein Titel zählt nur, wenn er einem Markennamen genau entspricht."
+  },
+  "optionsSourcesDomainShort": {
+    "message": "Nur die Domain"
+  },
+  "optionsSourcesDomainDesc": {
+    "message": "Die strengste Einstellung: es zählt allein die Adresse der Seite. Weniger Treffer, dafür nichts, was nur daher rührt, wie eine Seite gerade heißt."
+  },
   "optionsMutedHeading": {
     "message": "Abgeschaltete Seiten"
   },

@@ -162,6 +162,33 @@
 
         <section class="row">
           <div class="row-head">
+            <h2 data-i18n="optionsSourcesHeading">What counts as the brand name</h2>
+            <p data-i18n="optionsSourcesRowDesc">The domain always counts. The page title finds more, but on sites that aren't shops it can produce a stray word.</p>
+          </div>
+          <div class="row-body">
+            <div class="option-list" id="sourcesList">
+              <label class="option">
+                <input class="visually-hidden" type="radio" name="matchSources" value="domain+title">
+                <span class="radio" aria-hidden="true"></span>
+                <span>
+                  <span class="option-title" data-i18n="optionsSourcesBothShort">Domain and page title</span>
+                  <span class="option-desc" data-i18n="optionsSourcesBothDesc">Also catches brands whose domain doesn't split into words, e.g. easyairportparking.de. A title only counts when it matches a brand name exactly.</span>
+                </span>
+              </label>
+              <label class="option">
+                <input class="visually-hidden" type="radio" name="matchSources" value="domain">
+                <span class="radio" aria-hidden="true"></span>
+                <span>
+                  <span class="option-title" data-i18n="optionsSourcesDomainShort">Domain only</span>
+                  <span class="option-desc" data-i18n="optionsSourcesDomainDesc">The strictest setting: only the site's own address is used. Fewer matches, and nothing derived from what a page happens to be called.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="row">
+          <div class="row-head">
             <h2 data-i18n="optionsMutedHeading">Sites you switched off</h2>
             <p data-i18n="optionsMutedRowDesc">Set per site in the popup, or added here as a pattern. The badge still counts there — only the automatic alert stops.</p>
           </div>
