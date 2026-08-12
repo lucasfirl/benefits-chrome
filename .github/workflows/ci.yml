@@ -29,7 +29,7 @@ jobs:
         id: v
         shell: pwsh
         run: |
-          $v = (Get-Content manifest.json -Raw | ConvertFrom-Json).version
+          $v = (Get-Content src/manifest.json -Raw | ConvertFrom-Json).version
           "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
       - uses: actions/upload-artifact@v5
         with:
