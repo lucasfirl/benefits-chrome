@@ -327,6 +327,33 @@ const mutedHead = document.getElementById("mutedHead");
 const mutedCount = document.getElementById("mutedCount");
 const mutedFilter = document.getElementById("mutedFilter");
 const mutedClearAll = document.getElementById("mutedClearAll");
+const mutedAddForm = document.getElementById("mutedAddForm");
+const mutedAddInput = document.getElementById("mutedAddInput");
+const mutedAddStatus = document.getElementById("mutedAddStatus");
+
+// Hier - und nur hier - lassen sich Eintraege von Hand anlegen. Im Popup geht
+// immer nur die Seite, auf der man gerade steht; ein Muster wie "google.*"
+// deckt dagegen Adressen ab, die man nie einzeln besucht.
+mutedAddForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const raw = mutedAddInput.value;
+  if (!isValidMuteEntry(raw)) {
+    setFieldStatus(mutedAddStatus, t("optionsMutedAddInvalid"), "error");
+    return;
+  }
+  const key = muteEntryKey(raw);
+  const { always, session } = await readMutedHosts();
+  if (always.has(key) || session.has(key)) {
+    setFieldStatus(mutedAddStatus, t("optionsMutedAddDuplicate", [key]), "warn");
+    return;
+  }
+  await setSiteMute(key, "always");
+  mutedAddInput.value = "";
+  setFieldStatus(mutedAddStatus, t("optionsMutedAddDone", [key]), "success");
+  await refreshMutedUi();
+});
+
+mutedAddInput.addEventListener("input", () => setFieldStatus(mutedAddStatus, ""));
 
 // Ab hier lohnt sich das Filterfeld - darunter sieht man ohnehin alle Zeilen
 // auf einen Blick, und ein leeres Suchfeld waere nur Beiwerk. Die Liste selbst
@@ -352,6 +379,9 @@ function renderMutedList() {
   shown.forEach(({ host, temporary }) => {
     const row = el("div", { className: "muted-row" });
     row.appendChild(el("span", { className: "muted-host", textContent: host }));
+    if (isMutePattern(host)) {
+      row.appendChild(el("span", { className: "chip", textContent: t("optionsMutedPattern") }));
+    }
     if (temporary) {
       row.appendChild(el("span", { className: "chip", textContent: t("optionsMutedTemporary") }));
     }

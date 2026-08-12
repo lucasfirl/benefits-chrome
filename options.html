@@ -163,9 +163,17 @@
         <section class="row">
           <div class="row-head">
             <h2 data-i18n="optionsMutedHeading">Sites you switched off</h2>
-            <p data-i18n="optionsMutedRowDesc">Set per site in the popup. The badge still counts there — only the automatic alert stops.</p>
+            <p data-i18n="optionsMutedRowDesc">Set per site in the popup, or added here as a pattern. The badge still counts there — only the automatic alert stops.</p>
           </div>
           <div class="row-body">
+            <form class="field-row" id="mutedAddForm">
+              <label class="visually-hidden" for="mutedAddInput" data-i18n="optionsMutedAddLabel">Add a site or pattern</label>
+              <input id="mutedAddInput" type="text" placeholder="*.google.com" autocomplete="off" spellcheck="false">
+              <button class="btn outline" type="submit" data-i18n="optionsMutedAddBtn">Add</button>
+            </form>
+            <p class="field-status" id="mutedAddStatus" role="status"></p>
+            <p class="muted-hint" data-i18n="optionsMutedWildcardHint">A * stands in for a name part: *.google.com covers google.com and every subdomain, google.* covers google.de and google.com.</p>
+
             <div class="muted-head" id="mutedHead" hidden>
               <span class="muted-count" id="mutedCount"></span>
               <input id="mutedFilter" type="search" hidden autocomplete="off" placeholder="Filter sites" data-i18n-placeholder="optionsMutedFilterPlaceholder">

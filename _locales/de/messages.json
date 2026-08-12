@@ -168,6 +168,47 @@
   "popupAutoStateAlways": {
     "message": "Hier dauerhaft aus"
   },
+  "popupAutoStateSessionPattern": {
+    "message": "Bis Browserende aus: $PATTERN$",
+    "placeholders": {
+      "pattern": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupAutoStateAlwaysPattern": {
+    "message": "Dauerhaft aus: $PATTERN$",
+    "placeholders": {
+      "pattern": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupScopeLabel": {
+    "message": "Gilt für"
+  },
+  "popupScopeHost": {
+    "message": "Diese Seite"
+  },
+  "popupScopeHostTitle": {
+    "message": "Nur $HOST$",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupScopeDomain": {
+    "message": "Ganze Domain"
+  },
+  "popupScopeDomainTitle": {
+    "message": "$DOMAIN$ und alle Unterdomains",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
   "popupCatalogBar": {
     "message": "$COUNT$ Angebote · $AGE$ alt",
     "placeholders": {
@@ -341,7 +382,7 @@
     "message": "Abgeschaltete Seiten"
   },
   "optionsMutedRowDesc": {
-    "message": "Wird im Popup pro Seite gesetzt. Die Zahl am Symbol bleibt dort – nur die automatische Meldung unterbleibt."
+    "message": "Wird im Popup pro Seite gesetzt oder hier als Muster eingetragen. Die Zahl am Symbol bleibt dort – nur die automatische Meldung unterbleibt."
   },
   "optionsMutedNone": {
     "message": "Keine – die Erweiterung meldet sich überall."
@@ -374,6 +415,37 @@
   },
   "optionsMutedClearAllConfirm": {
     "message": "Wirklich alle?"
+  },
+  "optionsMutedAddLabel": {
+    "message": "Seite oder Muster hinzufügen"
+  },
+  "optionsMutedAddBtn": {
+    "message": "Hinzufügen"
+  },
+  "optionsMutedWildcardHint": {
+    "message": "Ein * steht für einen Namensteil: *.google.com deckt google.com und alle Unterdomains ab, google.* deckt google.de und google.com ab."
+  },
+  "optionsMutedAddInvalid": {
+    "message": "Das ist keine Seite und kein Muster – z. B. beispiel.de oder *.beispiel.de."
+  },
+  "optionsMutedAddDuplicate": {
+    "message": "$ENTRY$ steht schon auf der Liste.",
+    "placeholders": {
+      "entry": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsMutedAddDone": {
+    "message": "$ENTRY$ abgeschaltet.",
+    "placeholders": {
+      "entry": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsMutedPattern": {
+    "message": "Muster"
   },
   "optionsCatalogHeading": {
     "message": "Angebotskatalog"

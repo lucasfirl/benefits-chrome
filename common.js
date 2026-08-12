@@ -150,6 +150,130 @@ function muteHostKey(hostname) {
   return String(hostname).trim().toLowerCase().replace(/^www\./, "");
 }
 
+// --- Muster mit Platzhalter ----------------------------------------------
+//
+// Eine Liste aus lauter einzelnen Hostnamen wird bei grossen Anbietern zur
+// Fleissarbeit: mail.google.com, docs.google.com, google.de ... jedes Mal
+// dasselbe "Nie". Deshalb darf ein Eintrag auch ein Muster sein:
+//
+//   *.google.com  -> google.com und jede Unterseite davon
+//   google.*      -> google.de, google.com, google.co.uk
+//   *shop*.de     -> jeder .de-Host, in dem "shop" vorkommt
+//
+// Ein "*" steht fuer beliebige Zeichen innerhalb EINES Namensteils; nur die
+// beiden Sonderfaelle am Anfang ("*.") und am Ende (".*") duerfen mehrere
+// Teile ueberspringen. Sonst wuerde "*.google.com" auch auf
+// "google.com.beispiel.de" passen - eine fremde Seite.
+
+/** Enthaelt der Eintrag einen Platzhalter? */
+function isMutePattern(entry) {
+  return !!entry && String(entry).includes("*");
+}
+
+/**
+ * Vergleichsform eines Listeneintrags. Nimmt auch eine eingefuegte volle URL
+ * entgegen ("https://mail.google.com/mail/u/0") und macht den Host daraus.
+ * "www." faellt nur bei einfachen Hostnamen weg - in einem Muster hat der
+ * Nutzer es bewusst hingeschrieben.
+ */
+function muteEntryKey(value) {
+  if (!value) return "";
+  let key = String(value)
+    .trim()
+    .toLowerCase()
+    .replace(/^[a-z][a-z0-9+.-]*:\/\//, "") // Schema
+    .replace(/^[^/]*@/, "") // Anmeldedaten in der URL
+    .replace(/[/?#].*$/, "") // Pfad, Query, Anker
+    .replace(/:\d+$/, "") // Port
+    .replace(/\.+$/, ""); // abschliessender Punkt der Wurzelzone
+  if (!key) return "";
+  return isMutePattern(key) ? key : key.replace(/^www\./, "");
+}
+
+/**
+ * Prueft, ob ein Eintrag als Muster taugt. Bewusst streng: alles, was kein
+ * Hostname sein kann, waere ein Muster, das nie trifft - und der Nutzer
+ * saehe nur, dass sich nichts aendert.
+ */
+function isValidMuteEntry(value) {
+  const key = muteEntryKey(value);
+  if (!key) return false;
+  if (key === "*") return true; // "alles" - zulaessig, aber Absicht
+  if (!/^[a-z0-9*.-]+$/.test(key)) return false;
+  if (key.includes("..")) return false;
+  // Ohne Punkt bliebe nur ein einzelner Namensteil - keine Webseite.
+  return key.includes(".");
+}
+
+const escapeForRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Muster aendern sich selten, Seitenaufrufe sind viele - einmal uebersetzen
+// reicht.
+const mutePatternCache = new Map();
+
+function mutePatternToRegExp(pattern) {
+  const cached = mutePatternCache.get(pattern);
+  if (cached) return cached;
+
+  let regex;
+  if (pattern === "*") {
+    regex = /^.+$/;
+  } else {
+    let rest = pattern;
+    let prefix = "";
+    let suffix = "";
+    if (rest.startsWith("*.")) {
+      prefix = "(?:[^.]+\\.)*"; // beliebig viele Unterebenen - auch keine
+      rest = rest.slice(2);
+    }
+    if (rest.endsWith(".*")) {
+      // Genau eine Endung - ".de" ebenso wie ".co.uk", aber nichts anderes
+      // Zweiteiliges. Sonst deckte "google.*" auch "google.fremde-seite.de"
+      // ab, also einen Host, der jemand anderem gehoert. Zwei Namensteile
+      // sind darum nur erlaubt, wenn sie eine bekannte zweiteilige Endung
+      // sind - dieselbe Liste, die schon den Markennamen aus der Domain holt.
+      const twoPart = [...TWO_PART_TLDS].map(escapeForRegExp).join("|");
+      suffix = "(?:\\.(?:" + twoPart + ")|\\.[^.]+)";
+      rest = rest.slice(0, -2);
+    }
+    const middle = rest.split("*").map(escapeForRegExp).join("[^.]*");
+    regex = new RegExp("^" + prefix + middle + suffix + "$");
+  }
+
+  mutePatternCache.set(pattern, regex);
+  return regex;
+}
+
+/** Trifft ein Listeneintrag (Host oder Muster) auf diesen Hostnamen zu? */
+function muteEntryMatches(entry, hostname) {
+  const key = muteEntryKey(entry);
+  const host = muteHostKey(hostname);
+  if (!key || !host) return false;
+  if (!isMutePattern(key)) return key === host;
+  return mutePatternToRegExp(key).test(host);
+}
+
+/**
+ * Die registrierbare Domain eines Hosts - "mail.google.com" -> "google.com",
+ * "shop.example.co.uk" -> "example.co.uk". Daraus baut das Popup den
+ * Vorschlag "*.google.com" fuer den Umfang "ganze Domain".
+ */
+function baseDomainOf(hostname) {
+  const host = muteHostKey(hostname);
+  if (!host || isMutePattern(host)) return host;
+  const labels = host.split(".").filter(Boolean);
+  if (labels.length < 2) return host;
+  const lastTwo = labels.slice(-2).join(".");
+  if (labels.length >= 3 && TWO_PART_TLDS.has(lastTwo)) return labels.slice(-3).join(".");
+  return labels.slice(-2).join(".");
+}
+
+/** Das Muster, das eine ganze Domain samt Unterseiten abdeckt. */
+function domainMutePattern(hostname) {
+  const base = baseDomainOf(hostname);
+  return base ? "*." + base : "";
+}
+
 async function readMutedHosts() {
   const [sync, session] = await Promise.all([
     chrome.storage.sync.get(CB_MUTED_KEY),
@@ -161,14 +285,33 @@ async function readMutedHosts() {
   };
 }
 
+/** Erster Eintrag einer Liste, der auf den Hostnamen passt - sonst null. */
+function findMuteEntry(entries, hostname) {
+  for (const entry of entries) {
+    if (muteEntryMatches(entry, hostname)) return entry;
+  }
+  return null;
+}
+
+/**
+ * Liefert Modus und den Eintrag, der ihn ausloest. Der Eintrag zaehlt fuer die
+ * Anzeige: steht die Seite wegen "*.google.com" still, soll das Popup genau
+ * das zeigen und nicht so tun, als waere "mail.google.com" einzeln gesetzt.
+ */
+async function getSiteMuteMatch(hostname) {
+  const key = muteHostKey(hostname);
+  if (!key) return { mode: "off", entry: null };
+  const { always, session } = await readMutedHosts();
+  const hit = findMuteEntry(always, key);
+  if (hit) return { mode: "always", entry: hit };
+  const paused = findMuteEntry(session, key);
+  if (paused) return { mode: "session", entry: paused };
+  return { mode: "off", entry: null };
+}
+
 /** Liefert "off" | "session" | "always" fuer einen Hostnamen. */
 async function getSiteMute(hostname) {
-  const key = muteHostKey(hostname);
-  if (!key) return "off";
-  const { always, session } = await readMutedHosts();
-  if (always.has(key)) return "always";
-  if (session.has(key)) return "session";
-  return "off";
+  return (await getSiteMuteMatch(hostname)).mode;
 }
 
 // chrome.storage.sync erlaubt nur 8 KB je Eintrag - bei etwa 350 Hostnamen
@@ -178,15 +321,31 @@ async function getSiteMute(hostname) {
 // die erste vor Monaten gesetzt und vermisst sie nicht.
 const CB_MUTED_MAX = 250;
 
-/** Setzt genau einen der drei Zustaende; die anderen beiden werden geloescht. */
+/**
+ * Setzt genau einen der drei Zustaende fuer einen Hostnamen ODER ein Muster;
+ * die anderen beiden werden geloescht.
+ *
+ * Kommt ein Muster dazu, fallen die Einzeleintraege weg, die es ohnehin
+ * abdeckt: wer "*.google.com" setzt, will nicht danach noch drei tote Zeilen
+ * fuer mail./docs./www.google.com in den Einstellungen stehen haben.
+ */
 async function setSiteMute(hostname, mode) {
-  const key = muteHostKey(hostname);
+  const key = muteEntryKey(hostname);
   if (!key) return;
   const { always, session } = await readMutedHosts();
   always.delete(key);
   session.delete(key);
-  if (mode === "always") always.add(key);
-  if (mode === "session") session.add(key);
+
+  if (mode === "always" || mode === "session") {
+    if (isMutePattern(key)) {
+      for (const list of [always, session]) {
+        for (const existing of [...list]) {
+          if (existing !== key && muteEntryMatches(key, existing)) list.delete(existing);
+        }
+      }
+    }
+    (mode === "always" ? always : session).add(key);
+  }
 
   let alwaysList = [...always];
   if (alwaysList.length > CB_MUTED_MAX) alwaysList = alwaysList.slice(-CB_MUTED_MAX);
@@ -416,6 +575,12 @@ if (typeof module !== "undefined") {
     formatAsOfDate,
     displayBrand,
     muteHostKey,
+    muteEntryKey,
+    muteEntryMatches,
+    isMutePattern,
+    isValidMuteEntry,
+    baseDomainOf,
+    domainMutePattern,
     CB_CATALOG_MAX_AGE_MS,
   };
 }

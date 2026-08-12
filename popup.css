@@ -290,9 +290,8 @@ body.state-no-portal #settingsBtn { display: none; }
 
 #autoBar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
   padding: 8px 14px;
   border-top: 1px solid var(--rule);
   font-family: var(--mono);
@@ -300,6 +299,19 @@ body.state-no-portal #settingsBtn { display: none; }
   color: var(--muted);
   text-transform: uppercase;
   flex-shrink: 0;
+}
+
+.auto-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.auto-scope-label {
+  color: var(--muted);
+  opacity: 0.75;
 }
 
 #autoBarLabel {
@@ -334,6 +346,16 @@ body.state-no-portal #settingsBtn { display: none; }
 .seg button[aria-pressed="true"] {
   background: var(--ink);
   color: var(--paper);
+}
+
+/* Der Umfang traegt echte Adressen ("*.google.com"). Die bleiben klein
+   geschrieben - sie sollen als das lesbar sein, was gespeichert wird. */
+.seg.scope button {
+  text-transform: none;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* --- Catalogue bar ------------------------------------------------------ */
