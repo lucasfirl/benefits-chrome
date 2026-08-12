@@ -13,13 +13,14 @@ const EXT = path.join(__dirname, "..");
 const PORTAL = "https://example.mitarbeiterangebote.de";
 const noop = () => ({ addListener() {} });
 
-function load({ catalog = null } = {}) {
+function load({ catalog = null, activeTab = null } = {}) {
+  const messageListeners = [];
   const sandbox = {
     console: { log() {}, error() {}, warn() {} },
     setTimeout, clearTimeout, URL, Date, Set, Map, Number, String, JSON, Array, Object, Promise,
     chrome: {
-      runtime: { onMessage: { addListener() {} }, getContexts: async () => [{}], sendMessage: async () => ({ ok: true, deals: [] }), lastError: null },
-      tabs: { onUpdated: noop(), onActivated: noop(), onRemoved: noop(), get() {}, query: async () => [], update: async () => {} },
+      runtime: { onMessage: { addListener: (fn) => messageListeners.push(fn) }, getContexts: async () => [{}], sendMessage: async () => ({ ok: true, deals: [] }), lastError: null },
+      tabs: { onUpdated: noop(), onActivated: noop(), onRemoved: noop(), get() {}, query: async () => (activeTab ? [activeTab] : []), update: async () => {} },
       storage: {
         sync: { get: async () => ({ cbPortalOrigin: PORTAL, cbNotifyLevel: "silent" }) },
         session: { set: async () => {}, get: async () => ({}) },
@@ -47,7 +48,16 @@ function load({ catalog = null } = {}) {
   sandbox.__sync = async () => { calls.sync++; return { ok: false, error: "not-logged-in", portalOrigin: PORTAL }; };
   sandbox.__search = async () => { calls.search++; return "not-logged-in"; };
   vm.runInContext("syncCatalog = __sync; searchPortal = __search;", sandbox);
-  return { sandbox, calls };
+
+  const send = (message) =>
+    new Promise((resolve) => {
+      let answered = false;
+      const done = (r) => { answered = true; resolve(r); };
+      messageListeners.forEach((fn) => fn(message, {}, done));
+      setTimeout(() => { if (!answered) resolve(null); }, 500);
+    });
+
+  return { sandbox, calls, send };
 }
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -116,6 +126,30 @@ const check = (ok, label, detail) => {
     await wait(400);
     const st = sandbox.__tabResults.get(500) || {};
     check(st.status === "not-applicable", "das Portal selbst wird uebersprungen", `status=${st.status}`);
+  }
+
+  // 6) "Erneut versuchen" im Popup: nur der Klick darf die Sperre aufheben.
+  //    Das Popup stoesst beim Oeffnen selbst einen Rescan an - der nicht.
+  {
+    const tab = { id: 600, url: "https://c.example.com/" };
+    const { sandbox, calls, send } = load({ activeTab: tab });
+    await wait(20);
+    sandbox.__scheduleScan(tab.id, tab.url, null);
+    await wait(400);
+    const afterFirst = calls.search;
+
+    await send({ target: "background", type: "RESCAN" });
+    await wait(200);
+    const afterAuto = calls.search;
+
+    await send({ target: "background", type: "RESCAN", userAction: true });
+    await wait(400);
+
+    check(
+      afterFirst === 1 && afterAuto === 1 && calls.search === 2,
+      "nur der bewusste Klick hebt die Ausgeloggt-Sperre auf",
+      `searchPortal: ${afterFirst} -> ${afterAuto} (Popup-Rescan) -> ${calls.search} (Klick)`
+    );
   }
 
   console.log(`\n${results.filter(Boolean).length}/${results.length}`);
