@@ -78,5 +78,4 @@ not granted at install time.
 
 ## Contact
 
-<!-- Trage hier deine Kontakt-E-Mail ein, bevor du das veroeffentlichst. -->
-Questions about this policy: **[YOUR-EMAIL-HERE]**
+Questions about this policy: lucas.p.firl@gmail.com

@@ -3,7 +3,7 @@
     "message": "CB Deal Finder"
   },
   "appDescription": {
-    "message": "Durchsucht die Website, die Sie gerade besuchen, nach passenden Angeboten aus Ihrem Mitarbeiterportal. Inoffiziell – steht in keiner Verbindung zur corporate benefits Germany GmbH."
+    "message": "Findet Angebote aus dem Mitarbeiterportal für diese Seite. Inoffiziell – nicht mit corporate benefits Germany GmbH verbunden."
   },
   "popupWordmark": {
     "message": "Deal Finder"
@@ -37,7 +37,7 @@
     "message": "Keine passenden Angebote gefunden."
   },
   "popupNoMatchHeading": {
-    "message": "Nichts hinterlegt zu $BRAND$",
+    "message": "Nichts hinterlegt für $BRAND$",
     "placeholders": {
       "brand": {
         "content": "$1"
@@ -51,7 +51,7 @@
     "message": "Einmalige Einrichtung"
   },
   "popupNoPortalHeading": {
-    "message": "Sagen Sie der Erweiterung, wo Ihr Portal liegt"
+    "message": "Sagen Sie der Erweiterung, wo Ihr Portal zu finden ist"
   },
   "popupNoPortalBody": {
     "message": "Jeder Arbeitgeber hat seine eigene Adresse. Einmal eintragen – danach zählt das Symbol die Angebote auf den Seiten, die Sie besuchen."
@@ -90,10 +90,10 @@
     "message": "Hier gibt es nichts nachzuschlagen"
   },
   "popupNotApplicable": {
-    "message": "Für diese Seite gibt es keine Deals zu finden."
+    "message": "Für diese Seite gibt es nichts zu holen."
   },
   "popupDefaultHint": {
-    "message": "Öffnen Sie eine Website, um sie nach Angeboten zu durchsuchen."
+    "message": "Öffnen Sie eine Website, um Angebote dafür zu finden."
   },
   "popupErrorChip": {
     "message": "Fehler"
@@ -163,7 +163,7 @@
     "message": "Meldet sich hier automatisch"
   },
   "popupAutoStateSession": {
-    "message": "Hier aus bis zum Browser-Ende"
+    "message": "Hier aus, bis der Browser geschlossen wird"
   },
   "popupAutoStateAlways": {
     "message": "Hier dauerhaft aus"
@@ -293,7 +293,7 @@
     "message": "Angebote automatisch finden"
   },
   "optionsAutoScanRowDesc": {
-    "message": "Liest nur den Titel jeder Seite, damit die Zahl am Symbol stimmt, ohne das Popup zu öffnen. Braucht die weitreichende Berechtigung für alle Seiten."
+    "message": "Liest nur den Titel jeder Seite, damit die Zahl am Symbol stimmt, ohne dass Sie das Popup öffnen müssen. Braucht die weitreichende Berechtigung für alle Seiten."
   },
   "optionsAutoScanOnTitle": {
     "message": "An"
@@ -309,6 +309,9 @@
   },
   "optionsAsksPermission": {
     "message": "Fragt nach Berechtigung"
+  },
+  "optionsAutoScanDeniedHint": {
+    "message": "Chrome hat den Zugriff nicht erteilt. Öffnen Sie chrome://extensions, suchen Sie diese Erweiterung und stellen Sie „Website-Zugriff“ auf „Auf allen Websites“."
   },
   "optionsNotifyLabel": {
     "message": "Wenn ein Treffer gefunden wird"
@@ -338,13 +341,13 @@
     "message": "Abgeschaltete Seiten"
   },
   "optionsMutedRowDesc": {
-    "message": "Wird im Popup je Seite gesetzt. Die Zahl am Symbol bleibt dort – nur die automatische Meldung unterbleibt."
+    "message": "Wird im Popup pro Seite gesetzt. Die Zahl am Symbol bleibt dort – nur die automatische Meldung unterbleibt."
   },
   "optionsMutedNone": {
     "message": "Keine – die Erweiterung meldet sich überall."
   },
   "optionsMutedTemporary": {
-    "message": "bis Browser-Ende"
+    "message": "nur für diese Sitzung"
   },
   "optionsMutedRemoveBtn": {
     "message": "Wieder einschalten"
@@ -376,7 +379,7 @@
     "message": "Angebotskatalog"
   },
   "optionsCatalogRowDesc": {
-    "message": "Markennamen sind stabil, Rabatthöhen nicht. Erneuern Sie den Katalog, wenn eine Zahl falsch aussieht."
+    "message": "Markennamen sind stabil, Rabatthöhen nicht. Erneuern Sie den Katalog, wenn ein Wert nicht stimmen kann."
   },
   "optionsCatalogOffers": {
     "message": "$COUNT$ Angebote",
@@ -427,19 +430,19 @@
     "message": "Katalog-Aktualisierung fehlgeschlagen."
   },
   "optionsHowHeading": {
-    "message": "So funktioniert es & rechtlicher Hinweis"
+    "message": "Funktionsweise & rechtlicher Hinweis"
   },
   "optionsHowRowDesc": {
-    "message": "Vollständig erhalten, aber den Einstellungen aus dem Weg."
+    "message": "Ungekürzt, aber abseits der Einstellungen."
   },
   "optionsHowLi1": {
-    "message": "Sie müssen in diesem Browser bereits bei Ihrem CB-Portal angemeldet sein – die Erweiterung nutzt diese Sitzung und sieht oder speichert Ihr Passwort nie."
+    "message": "Sie müssen in diesem Browser bereits bei Ihrem CB-Portal angemeldet sein – die Erweiterung nutzt diese Sitzung mit; Ihr Passwort sieht oder speichert sie nie."
   },
   "optionsHowLi2": {
-    "message": "Beim Besuch einer Website rät die Erweiterung anhand der Domain einen Markennamen und gleicht ihn mit dem lokalen Katalog ab."
+    "message": "Beim Besuch einer Website errät die Erweiterung aus der Domain einen Markennamen und sucht ihn im lokalen Katalog."
   },
   "optionsHowLi3": {
-    "message": "Es wird nichts irgendwohin gesendet außer Anfragen an das Portal, das Sie hier freigeben."
+    "message": "Es werden keine Daten übertragen – außer Anfragen an die Portaladresse, die Sie hier freigeben."
   },
   "setupEyebrow": {
     "message": "Einmalige Einrichtung"
@@ -469,7 +472,7 @@
     "message": "Surfen"
   },
   "setupStep3Desc": {
-    "message": "Das Symbol zählt die Angebote zur Seite, auf der Sie sind."
+    "message": "Das Symbol zählt die Angebote für die Seite, auf der Sie gerade sind."
   },
   "setupFootnote": {
     "message": "Inoffiziell · steht in keiner Verbindung zur corporate benefits Germany GmbH, wird von ihr weder betrieben noch unterstützt."
@@ -486,10 +489,10 @@
     }
   },
   "notifyOneDeal": {
-    "message": "Ein Angebot wartet in Ihrem Portal auf die Seite, die Sie gerade lesen."
+    "message": "Für die Seite, die Sie gerade lesen, liegt ein Angebot in Ihrem Portal."
   },
   "notifyMultipleDeals": {
-    "message": "$COUNT$ Angebote warten in Ihrem Portal auf die Seite, die Sie gerade lesen.",
+    "message": "Für die Seite, die Sie gerade lesen, liegen $COUNT$ Angebote in Ihrem Portal.",
     "placeholders": {
       "count": {
         "content": "$1"

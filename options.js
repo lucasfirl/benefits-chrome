@@ -16,6 +16,7 @@ const autoScanToggle = document.getElementById("autoScanToggle");
 const autoScanTitle = document.getElementById("autoScanTitle");
 const autoScanDesc = document.getElementById("autoScanDesc");
 const autoScanChip = document.getElementById("autoScanChip");
+const autoScanStatus = document.getElementById("autoScanStatus");
 
 const notifyList = document.getElementById("notifyList");
 
@@ -229,8 +230,21 @@ setupForm.addEventListener("submit", async (e) => {
 
 // --- Automatic scanning ---------------------------------------------------
 
+// Der zuletzt gelesene Stand. Der Klick-Handler darf ihn nicht selbst frisch
+// abfragen: chrome.permissions.request() will eine Nutzergeste, und die ist
+// nach dem ersten await verbraucht - der Dialog kaeme dann gar nicht mehr.
+let autoScanEnabled = false;
+let lastGrantedOrigins = [];
+
 async function refreshAutoScanUi() {
   const enabled = await cbHasAutoScanPermission();
+  autoScanEnabled = enabled;
+  const all = await chrome.permissions.getAll().catch(() => ({}));
+  // Diagnose: zeigt, was Chrome wirklich gewaehrt hat, wenn der Schalter nicht
+  // zum erteilten Zugriff passt.
+  console.debug("[CB Deal Finder] auto scan permission:", enabled, all);
+  lastGrantedOrigins = (all && all.origins) || [];
+  if (enabled) setFieldStatus(autoScanStatus, "");
   autoScanToggle.setAttribute("aria-checked", enabled ? "true" : "false");
   autoScanTitle.textContent = enabled ? t("optionsAutoScanOnTitle") : t("optionsAutoScanOffTitle");
   autoScanDesc.textContent = enabled ? t("optionsAutoScanOnDesc") : t("optionsAutoScanOffDesc");
@@ -254,19 +268,45 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden) refreshAutoScanUi();
 });
 
-autoScanToggle.addEventListener("click", async () => {
-  const currentlyEnabled = await cbHasAutoScanPermission();
-  if (currentlyEnabled) {
-    await chrome.permissions.remove({ origins: CB_AUTO_SCAN_ORIGINS });
-    await chrome.runtime.sendMessage({ target: "background", type: "SET_AUTO_SCAN", enabled: false });
-  } else {
-    const granted = await chrome.permissions.request({ origins: CB_AUTO_SCAN_ORIGINS });
-    if (granted) {
-      await chrome.runtime.sendMessage({ target: "background", type: "SET_AUTO_SCAN", enabled: true });
-    }
+async function afterAutoScanChange(enabled) {
+  try {
+    await chrome.runtime.sendMessage({ target: "background", type: "SET_AUTO_SCAN", enabled });
+  } catch (e) {
+    console.error("[CB Deal Finder] SET_AUTO_SCAN failed", e);
   }
   await refreshAutoScanUi();
   await refreshStatusPanel();
+}
+
+// Callback-Form statt await: nur so laeuft der Aufruf noch innerhalb der
+// Nutzergeste des Klicks, und Chrome zeigt den Berechtigungsdialog.
+autoScanToggle.addEventListener("click", () => {
+  if (autoScanEnabled) {
+    chrome.permissions.remove({ origins: CB_AUTO_SCAN_ORIGINS }, (removed) => {
+      if (chrome.runtime.lastError) {
+        console.error("[CB Deal Finder] permissions.remove", chrome.runtime.lastError.message);
+      }
+      afterAutoScanChange(!removed);
+    });
+  } else {
+    chrome.permissions.request({ origins: CB_AUTO_SCAN_ORIGINS }, (granted) => {
+      if (chrome.runtime.lastError) {
+        console.error("[CB Deal Finder] permissions.request", chrome.runtime.lastError.message);
+      }
+      // Abgelehnt: nur neu einlesen, damit der Schalter nicht faelschlich
+      // umspringt - und erklaeren, statt den Nutzer klicken zu lassen, ohne
+      // dass sich sichtbar etwas tut.
+      if (granted) {
+        afterAutoScanChange(true);
+        return;
+      }
+      const detail = chrome.runtime.lastError
+        ? chrome.runtime.lastError.message
+        : "granted=" + granted + ", origins=[" + lastGrantedOrigins.join(", ") + "]";
+      setFieldStatus(autoScanStatus, t("optionsAutoScanDeniedHint") + " (" + detail + ")", "error");
+      refreshAutoScanUi();
+    });
+  }
 });
 
 // --- Notification "loudness" ---------------------------------------------

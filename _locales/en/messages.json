@@ -3,7 +3,7 @@
     "message": "CB Deal Finder"
   },
   "appDescription": {
-    "message": "Finds deals from your employee benefits portal for the site you're on. Unofficial – not affiliated with corporate benefits Germany GmbH."
+    "message": "Finds deals from your benefits portal for the site you are on. Unofficial – not affiliated with corporate benefits Germany GmbH."
   },
   "popupWordmark": {
     "message": "Deal Finder"
@@ -309,6 +309,9 @@
   },
   "optionsAsksPermission": {
     "message": "Asks permission"
+  },
+  "optionsAutoScanDeniedHint": {
+    "message": "Chrome did not grant access. Open chrome://extensions, find this extension, and set “Site access” to “On all sites”."
   },
   "optionsNotifyLabel": {
     "message": "When a match is found"
