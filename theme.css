@@ -1,0 +1,184 @@
+/* Design tokens shared by the popup and the options page.
+ *
+ * The redesign is a deliberately flat "paper" palette: warm off-white surfaces,
+ * one near-black ink, hairline rules. The dark variant below follows the system
+ * setting and keeps every relationship the design relies on, rather than being
+ * a mechanical colour inversion:
+ *
+ *   - `--ink` stays "the strong one", so a discount chip is still a solid block
+ *     of ink carrying paper-coloured figures - only which of the two is light
+ *     changes.
+ *   - Surfaces keep their order. The card sits above the page ground, wells
+ *     (inputs, boxed controls) recess below the card, hover lifts above it.
+ *   - `--rule-strong` exists because the emphatic rules (top bar, card edge,
+ *     input borders) are `--ink` in light, and a hairline of near-white on
+ *     near-black glares in a way near-black on near-white does not. In light
+ *     mode the two tokens are the same colour, so nothing shifts there.
+ */
+
+:root {
+  color-scheme: light;
+
+  --ink: #1a1a18;
+  --ink-hover: #000000;
+  --paper: #fbfbfa;
+  --white: #ffffff; /* wells: inputs and boxed controls */
+
+  --canvas: #e9e8e2; /* ground the options card sits on */
+  --panel: #f5f4ef; /* standing status column */
+  --wash: #f0efe9; /* row hover, inline code */
+  --rule: #dcdcd7; /* hairline inside a card */
+  --rule-strong: #1a1a18; /* the emphatic rules - same as --ink in light */
+
+  --body: #55554f; /* running prose */
+  --muted: #6b6b66; /* secondary labels */
+  --faint: #8a8a84; /* legal / timestamps */
+
+  --ok: #2f7d4f;
+
+  --flag-bg: #f2e8d5;
+  --flag-fg: #7a4f10;
+  --flag-border: #e0cfae;
+
+  --alert-bg: #f3e3e0;
+  --alert-fg: #8a3122;
+  --alert-border: #e2c6c0;
+
+  /* Brand logos come from the portal and almost all assume a white ground, so
+     this tile stays light in both themes - a dark one would swallow them. */
+  --logo-bg: #ffffff;
+
+  --shadow: rgba(26, 26, 24, 0.14);
+
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --ink: #ecebe6;
+    --ink-hover: #ffffff;
+    --paper: #1f1f1c;
+    --white: #171715;
+
+    --canvas: #131311;
+    --panel: #1a1a18;
+    --wash: #272723;
+    --rule: #35352f;
+    --rule-strong: #57554d;
+
+    --body: #c9c8c0;
+    --muted: #a09e96;
+    --faint: #8b8a81;
+
+    --ok: #6fbe8d;
+
+    --flag-bg: #382d1a;
+    --flag-fg: #e5c68a;
+    --flag-border: #574725;
+
+    --alert-bg: #38211d;
+    --alert-fg: #eeada1;
+    --alert-border: #5a3730;
+
+    --logo-bg: #e8e7e1;
+
+    --shadow: rgba(0, 0, 0, 0.65);
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Several containers below set `display: flex/grid`, which would otherwise
+   beat the [hidden] attribute's UA `display: none`. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Small uppercase mono label, used above every block in the design. */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chip {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--flag-bg);
+  color: var(--flag-fg);
+  border: 1px solid var(--flag-border);
+  padding: 3px 7px;
+}
+.chip.alert {
+  background: var(--alert-bg);
+  color: var(--alert-fg);
+  border-color: var(--alert-border);
+}
+
+.btn {
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 13px;
+}
+.btn:hover { background: var(--ink-hover); }
+
+.btn.secondary {
+  background: none;
+  color: var(--ink);
+  border-color: var(--rule);
+  font-weight: 400;
+}
+.btn.secondary:hover { background: none; border-color: var(--ink); }
+
+.btn.outline {
+  background: none;
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.btn.outline:hover { background: var(--ink); color: var(--paper); }
+
+.btn:disabled,
+.btn.outline:disabled {
+  background: none;
+  border-color: var(--rule);
+  color: var(--faint);
+  cursor: default;
+}
+
+/* Focus is drawn as an offset ink outline - there are no rounded corners
+   anywhere in this design, so the default ring would look foreign. */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

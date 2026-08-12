@@ -1,0 +1,380 @@
+/* Popup — 380px wide (was 340px). The extra 40px is what lets a deal row hold
+ * a 34px logo, a two-line name/description and a monospaced discount chip on
+ * one line without any of them wrapping.
+ *
+ * The blocks are laid out with `order` rather than being moved in the DOM:
+ * in the resting states the search box sits *below* the results, but once a
+ * manual search is running it moves to the top and the page-match content is
+ * hidden. See body.searching below.
+ */
+
+body {
+  width: 380px;
+  max-height: 598px;
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+#topBar { order: 0; }
+#content { order: 2; }
+#manualSearchForm { order: 3; }
+#manualResults { order: 4; }
+#autoBar { order: 5; }
+#catalogBar { order: 6; }
+
+#content,
+#manualResults {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+body.searching #manualSearchForm { order: 1; }
+body.searching #content { display: none; }
+body.searching #manualSearchForm { padding-bottom: 0; }
+
+/* --- Header ------------------------------------------------------------- */
+
+#topBar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--rule-strong);
+  background: var(--paper);
+  flex-shrink: 0;
+}
+
+.wordmark {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.host {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  max-width: 165px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.host:empty { display: none; }
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  color: var(--muted);
+  display: flex;
+}
+.icon-btn:hover { color: var(--ink); }
+.icon-btn.tight { padding: 0; }
+
+/* The gear is meaningless before a portal is set — that state has its own
+   "Set it up" button and nothing else to configure. */
+body.state-no-portal #settingsBtn { display: none; }
+
+/* --- Page matches ------------------------------------------------------- */
+
+.brand-head {
+  padding: 16px 14px 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.brand-head .name {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.brand-head .count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.deal-list { padding: 0 14px; }
+
+.deal {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 11px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+}
+.deal:last-child { border-bottom: 1px solid var(--rule); }
+.deal:hover { background: var(--wash); }
+
+.deal img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border: 1px solid var(--rule);
+  background: var(--logo-bg);
+  display: block;
+}
+
+.deal .text { min-width: 0; }
+
+.deal .title {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.deal .desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 2px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Discounts are set in mono so a column of them lines up and reads as a set
+   of figures rather than as more copy. */
+.deal .discount {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 600;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+/* One dated caveat under the whole list, instead of one per deal. */
+.as-of {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  text-transform: uppercase;
+  padding: 7px 0 0;
+  margin: 0;
+}
+
+/* --- Empty / notice states ---------------------------------------------- */
+
+.empty {
+  padding: 30px 20px 24px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+.empty h2 {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0;
+}
+.empty p {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 8px auto 0;
+  max-width: 250px;
+  text-wrap: pretty;
+}
+
+.notice {
+  padding: 20px 14px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.notice h2 {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 11px 0 0;
+}
+.notice > h2:first-child { margin-top: 0; }
+.notice .eyebrow + h2 { margin-top: 7px; }
+.notice p {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 7px 0 0;
+  text-wrap: pretty;
+}
+
+.notice .origin {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  margin-top: 12px;
+  padding: 7px 9px;
+  background: var(--wash);
+  border: 1px solid var(--rule);
+  word-break: break-all;
+}
+
+.notice .actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.placeholder {
+  margin: 0;
+  padding: 34px 14px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* --- Search ------------------------------------------------------------- */
+
+.search {
+  padding: 12px 14px;
+  flex-shrink: 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--rule-strong);
+  padding: 7px 9px;
+  background: var(--white);
+  color: var(--muted);
+}
+.search-box:focus-within,
+.search.has-value .search-box { color: var(--ink); }
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.search-box input::placeholder { color: var(--muted); }
+
+.result-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 14px 0;
+  margin: 0;
+}
+
+#manualResults .deal-list { padding: 6px 14px 0; }
+
+/* --- Auto-alert bar (per site) ------------------------------------------ */
+
+#autoBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+#autoBarLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Drei Schalter in einem Rahmen - der aktive ist ausgefuellt, damit auf einen
+   Blick klar ist, ob "aus" nur bis zum Browserende oder dauerhaft gilt. */
+.seg {
+  display: flex;
+  border: 1px solid var(--rule-strong);
+  flex-shrink: 0;
+}
+
+.seg button {
+  font-family: inherit;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 3px 7px;
+  border: none;
+  border-left: 1px solid var(--rule-strong);
+  background: var(--white);
+  color: var(--muted);
+  cursor: pointer;
+}
+.seg button:first-child { border-left: none; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* --- Catalogue bar ------------------------------------------------------ */
+
+#catalogBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  /* Closes the popup now that the disclaimer is gone, hence the extra bottom
+     padding - 8px alone left the row sitting on the window edge. */
+  padding: 8px 14px 10px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.btn.tiny {
+  font-size: 10.5px;
+  font-weight: 400;
+  padding: 3px 7px;
+  text-transform: uppercase;
+}
+
+/* Where the block above already closes with a rule, the next block must not
+   draw its own or the popup gets a double hairline. */
+body.no-search #catalogBar,
+body.no-search #autoBar { border-top: none; }
+body.searching #catalogBar { border-top: none; padding-top: 12px; }
+body.searching #autoBar { display: none; }
+
+/* Steht die Seiten-Leiste da, braucht die Katalogleiste ihre eigene Trennlinie
+   wieder - sonst verschmelzen beide Zeilen zu einem Block. */
+body:has(#autoBar:not([hidden])) #catalogBar { border-top: 1px solid var(--rule); }
+
+body.state-no-portal #manualSearchForm,
+body.state-no-portal #autoBar,
+body.state-no-portal #catalogBar { display: none; }
+/* Nothing follows the notice in that state, so its closing rule would just
+   underline the bottom edge of the popup. */
+body.state-no-portal .notice { border-bottom: none; }

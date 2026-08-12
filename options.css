@@ -1,0 +1,463 @@
+/* Options page — two columns instead of one 520px file.
+ *
+ * Left: a standing status panel (what the extension currently is).
+ * Right: the settings themselves, each a labelled row.
+ *
+ * On a fresh install the whole thing collapses to a single centred setup
+ * column — one thing to do, nothing else on screen.
+ */
+
+body {
+  padding: 40px 24px 64px;
+  font-size: 14px;
+  line-height: 1.5;
+  /* The card carries a 1px border and a hard offset shadow — both need a ground
+     that differs from the card itself to read at all. In either theme the card
+     is the lighter of the two, so it still sits *on* the page. */
+  background: var(--canvas);
+}
+
+.shell {
+  width: 1160px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+/* --- App bar ------------------------------------------------------------ */
+
+.app-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 32px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.app-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.app-bar-spacer { flex: 1; }
+
+.app-mode {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* --- Columns ------------------------------------------------------------ */
+
+.cols {
+  display: grid;
+  grid-template-columns: 316px 1fr;
+  align-items: stretch;
+}
+
+.status-panel {
+  padding: 28px 28px 34px 32px;
+  border-right: 1px solid var(--rule);
+  background: var(--panel);
+}
+
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 9px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* A square, not a dot — nothing in this design is round except the radios. */
+.status-line .dot {
+  width: 8px;
+  height: 8px;
+  display: block;
+  background: var(--ok);
+  flex-shrink: 0;
+}
+.status-line .dot.warn { background: var(--flag-fg); }
+.status-line .dot.idle { background: var(--faint); }
+
+.facts {
+  margin: 18px 0 0;
+}
+
+.fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--rule);
+}
+.fact:last-child { border-bottom: 1px solid var(--rule); }
+
+.fact dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.fact dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  text-align: right;
+}
+.fact dd.wrap { word-break: break-all; }
+.fact dd.dim { color: var(--faint); }
+
+.panel-note {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--body);
+  margin: 16px 0 0;
+  text-wrap: pretty;
+}
+
+/* --- Setting rows ------------------------------------------------------- */
+
+.settings {
+  padding: 28px 32px 34px 30px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 208px 1fr;
+  gap: 26px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.row:first-child { padding-top: 0; }
+.row.last { padding-bottom: 0; border-bottom: none; }
+
+.row-head h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.row-head p {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 5px 0 0;
+}
+
+.field-row {
+  display: flex;
+  gap: 8px;
+}
+
+.field-row input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--rule-strong);
+  background: var(--white);
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink);
+  outline: none;
+}
+
+.field-row .btn { white-space: nowrap; }
+
+.field-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  min-height: 18px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.field-status.success { color: var(--ok); }
+.field-status.error { color: var(--alert-fg); }
+.field-status svg { flex-shrink: 0; }
+
+/* --- Boxed controls ----------------------------------------------------- */
+
+.control-box {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  padding: 11px 12px;
+}
+
+.control-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.control-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.control-desc {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.catalog-count {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.control-box .chip { white-space: nowrap; }
+
+/* Switch: a hard-edged track with a square knob that slides right when on. */
+.switch {
+  width: 38px;
+  height: 21px;
+  border: 1px solid var(--rule-strong);
+  background: var(--wash);
+  padding: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.switch .knob {
+  width: 15px;
+  height: 15px;
+  background: var(--ink);
+  display: block;
+  transition: margin-left 90ms linear;
+}
+.switch[aria-checked="true"] { background: var(--ink); }
+.switch[aria-checked="true"] .knob {
+  margin-left: 19px;
+  background: var(--paper);
+}
+
+/* --- Radio list --------------------------------------------------------- */
+
+.option-list {
+  border: 1px solid var(--rule);
+  background: var(--white);
+}
+
+.option {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 11px;
+  align-items: start;
+  padding: 11px 12px;
+  cursor: pointer;
+}
+.option + .option { border-top: 1px solid var(--rule); }
+.option:has(:checked) { background: var(--wash); }
+
+.option .radio {
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  margin-top: 2px;
+  display: block;
+  background: var(--paper);
+}
+.option:has(:checked) .radio { border-width: 4px; }
+
+.option-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.option-desc {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* --- Sites switched off -------------------------------------------------- */
+
+.muted-list {
+  border: 1px solid var(--rule);
+  background: var(--white);
+}
+
+.muted-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--rule);
+}
+.muted-row:first-child { border-top: none; }
+
+.muted-host {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.muted-row .chip { white-space: nowrap; }
+
+.muted-empty {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+  padding: 11px 12px;
+}
+
+/* --- How it works / legal ----------------------------------------------- */
+
+.how {
+  margin: 0 0 14px;
+  padding-left: 17px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--body);
+}
+.how li { margin-bottom: 4px; }
+.how li:last-child { margin-bottom: 0; }
+
+.legal {
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+}
+.legal .eyebrow { color: var(--faint); }
+.legal p {
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.portal-link { color: var(--ink); }
+
+/* --- First run ---------------------------------------------------------- */
+
+.setup {
+  padding: 52px 32px 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.setup-inner {
+  width: 620px;
+  max-width: 100%;
+}
+
+.setup h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 8px 0 0;
+}
+
+.setup .lede {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--body);
+  margin: 10px 0 0;
+  text-wrap: pretty;
+}
+
+.setup .field-row { margin-top: 22px; }
+.setup .field-row input {
+  padding: 11px 12px;
+  font-size: 13.5px;
+}
+.setup .field-row .btn {
+  font-size: 13.5px;
+  padding: 11px 20px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.steps li {
+  padding: 14px 16px 0;
+  border-right: 1px solid var(--rule);
+}
+.steps li:first-child { padding-left: 0; }
+.steps li:last-child { padding-right: 0; border-right: none; }
+
+.step-no {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.step-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.step-desc {
+  display: block;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.setup-foot {
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--faint);
+  margin: 26px 0 0;
+}
+
+/* --- Narrow windows ----------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  body { padding: 24px 16px 48px; }
+  .cols { grid-template-columns: 1fr; }
+  .status-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 24px 24px 28px;
+  }
+  .settings { padding: 24px; }
+  .row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .steps { grid-template-columns: 1fr; border-top: none; }
+  .steps li {
+    padding: 14px 0 0;
+    border-right: none;
+    border-top: 1px solid var(--rule);
+  }
+  .setup { padding: 32px 24px 40px; }
+}

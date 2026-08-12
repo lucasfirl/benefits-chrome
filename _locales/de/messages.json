@@ -1,0 +1,545 @@
+{
+  "appName": {
+    "message": "CB Deal Finder"
+  },
+  "appDescription": {
+    "message": "Durchsucht die Website, die du gerade besuchst, nach passenden Angeboten aus deinem Mitarbeiterportal. Inoffiziell – steht in keiner Verbindung zur corporate benefits Germany GmbH."
+  },
+  "popupWordmark": {
+    "message": "Deal Finder"
+  },
+  "popupSettingsTitle": {
+    "message": "Einstellungen"
+  },
+  "popupLoading": {
+    "message": "Diese Seite wird geprüft…"
+  },
+  "popupMatches": {
+    "message": "$N$ Treffer",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupMatchesOne": {
+    "message": "1 Treffer"
+  },
+  "popupFiguresAsOf": {
+    "message": "Stand $DATE$ · maßgeblich ist die Portalseite",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNoDeals": {
+    "message": "Keine passenden Angebote gefunden."
+  },
+  "popupNoMatchHeading": {
+    "message": "Nichts hinterlegt zu $BRAND$",
+    "placeholders": {
+      "brand": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNoMatchBody": {
+    "message": "Kein Angebot in deinem Katalog passt zu dieser Seite. Suche von Hand, wenn du eines erwartet hast."
+  },
+  "popupNoPortalStep": {
+    "message": "Schritt 1 von 1"
+  },
+  "popupNoPortalHeading": {
+    "message": "Sag der Erweiterung, wo dein Portal liegt"
+  },
+  "popupNoPortalBody": {
+    "message": "Jeder Arbeitgeber hat seine eigene Adresse. Einmal eintragen – danach zählt das Symbol die Angebote auf den Seiten, die du besuchst."
+  },
+  "popupNoPortalBtn": {
+    "message": "Einrichten"
+  },
+  "popupNoPermissionChip": {
+    "message": "Zugriff nötig"
+  },
+  "popupNoPermissionHeading": {
+    "message": "Zugriff auf dein Portal bestätigen"
+  },
+  "popupNoPermissionBody": {
+    "message": "Die Erweiterung darf nur die eine Domain lesen, die du bestätigst. Mehr wird nicht angefragt."
+  },
+  "popupGrantAccessBtn": {
+    "message": "Zugriff erlauben"
+  },
+  "popupSessionEndedChip": {
+    "message": "Sitzung beendet"
+  },
+  "popupNotLoggedInHeading": {
+    "message": "Melde dich im Portal an, um Angebote zu sehen"
+  },
+  "popupNotLoggedInBody": {
+    "message": "Angebote werden mit der Anmeldung gelesen, die du in diesem Browser ohnehin hast – ein Passwort wird hier nie gespeichert."
+  },
+  "popupOpenPortalBtn": {
+    "message": "Portal öffnen"
+  },
+  "popupTryAgainBtn": {
+    "message": "Erneut versuchen"
+  },
+  "popupNotApplicableHeading": {
+    "message": "Hier gibt es nichts nachzuschlagen"
+  },
+  "popupNotApplicable": {
+    "message": "Für diese Seite gibt es keine Deals zu finden."
+  },
+  "popupDefaultHint": {
+    "message": "Öffne eine Website, um sie nach Angeboten zu durchsuchen."
+  },
+  "popupErrorChip": {
+    "message": "Fehler"
+  },
+  "popupErrorHeading": {
+    "message": "Portal nicht erreichbar"
+  },
+  "popupErrorNotice": {
+    "message": "Beim Prüfen deines Portals ist ein Fehler aufgetreten: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSearchPlaceholder": {
+    "message": "Beliebige Marke suchen"
+  },
+  "popupSearchClear": {
+    "message": "Leeren"
+  },
+  "popupSearching": {
+    "message": "Wird gesucht…"
+  },
+  "popupSearchResults": {
+    "message": "$N$ Treffer · live gesucht",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSearchResultsOne": {
+    "message": "1 Treffer · live gesucht"
+  },
+  "popupManualErrNotLoggedIn": {
+    "message": "Du bist nicht bei deinem CB-Portal angemeldet."
+  },
+  "popupManualErrNoPermission": {
+    "message": "Erlaube zuerst den Zugriff auf das Portal (siehe oben)."
+  },
+  "popupManualErrNoPortal": {
+    "message": "Trage zuerst deine CB-Portal-URL in den Einstellungen ein."
+  },
+  "popupManualErrGeneric": {
+    "message": "Suche fehlgeschlagen."
+  },
+  "popupAutoOn": {
+    "message": "An"
+  },
+  "popupAutoOnTitle": {
+    "message": "Auf dieser Seite wieder automatisch melden"
+  },
+  "popupAutoSession": {
+    "message": "Pause"
+  },
+  "popupAutoSessionTitle": {
+    "message": "Für diese Seite aus, bis der Browser geschlossen wird"
+  },
+  "popupAutoAlways": {
+    "message": "Nie"
+  },
+  "popupAutoAlwaysTitle": {
+    "message": "Für diese Seite dauerhaft aus"
+  },
+  "popupAutoStateOn": {
+    "message": "Meldet sich hier automatisch"
+  },
+  "popupAutoStateSession": {
+    "message": "Hier aus bis zum Browser-Ende"
+  },
+  "popupAutoStateAlways": {
+    "message": "Hier dauerhaft aus"
+  },
+  "popupCatalogBar": {
+    "message": "$COUNT$ Angebote · $AGE$ alt",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "age": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupCatalogRefresh": {
+    "message": "Erneuern"
+  },
+  "popupCatalogSyncing": {
+    "message": "Katalog wird aktualisiert…"
+  },
+  "popupCatalogNone": {
+    "message": "Noch kein Katalog"
+  },
+  "popupCatalogErr": {
+    "message": "Aktualisierung fehlgeschlagen"
+  },
+  "catalogLoginLink": {
+    "message": "Im Portal anmelden"
+  },
+  "optionsPageTitle": {
+    "message": "CB Deal Finder – Einstellungen"
+  },
+  "optionsModeSettings": {
+    "message": "Einstellungen"
+  },
+  "optionsModeSetup": {
+    "message": "Einrichtung"
+  },
+  "optionsStatusHeading": {
+    "message": "Status"
+  },
+  "optionsStatusWorking": {
+    "message": "Läuft"
+  },
+  "optionsStatusNeedsSetup": {
+    "message": "Einrichtung nötig"
+  },
+  "optionsStatusNoAccess": {
+    "message": "Zugriff nötig"
+  },
+  "optionsStatusSignedOut": {
+    "message": "Abgemeldet"
+  },
+  "optionsFactPortal": {
+    "message": "Portal"
+  },
+  "optionsFactSession": {
+    "message": "Sitzung"
+  },
+  "optionsFactCatalogue": {
+    "message": "Katalog"
+  },
+  "optionsFactCatalogueValue": {
+    "message": "$COUNT$ · $AGE$ alt",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "age": {
+        "content": "$2"
+      }
+    }
+  },
+  "optionsFactAutoScan": {
+    "message": "Automatische Suche"
+  },
+  "optionsFactRequests": {
+    "message": "Portal-Anfragen / Woche"
+  },
+  "optionsSessionSignedIn": {
+    "message": "angemeldet"
+  },
+  "optionsSessionSignedOut": {
+    "message": "abgemeldet"
+  },
+  "optionsSessionUnknown": {
+    "message": "unbekannt"
+  },
+  "optionsValueOn": {
+    "message": "an"
+  },
+  "optionsValueOff": {
+    "message": "aus"
+  },
+  "optionsValueNotSet": {
+    "message": "nicht gesetzt"
+  },
+  "optionsValueNone": {
+    "message": "noch keiner"
+  },
+  "optionsPanelNote": {
+    "message": "Der Katalog wird einmal pro Woche geladen; jeder Abgleich danach passiert auf deinem Rechner. Deshalb kostet auch ein langer Surftag das Portal nichts."
+  },
+  "optionsPortalRowTitle": {
+    "message": "Portaladresse"
+  },
+  "optionsPortalRowDesc": {
+    "message": "Einmal pro Installation. Die Bestätigung erlaubt den Zugriff auf genau diese eine Domain – nicht mehr."
+  },
+  "optionsInputPlaceholder": {
+    "message": "deinefirma.mitarbeiterangebote.de"
+  },
+  "optionsSaveBtn": {
+    "message": "Speichern"
+  },
+  "optionsStatusInvalid": {
+    "message": "Bitte gib eine gültige Portaladresse ein."
+  },
+  "optionsStatusNotGranted": {
+    "message": "Der Zugriff wurde nicht erteilt – die Erweiterung erreicht dein Portal noch nicht."
+  },
+  "optionsStatusSavedGranted": {
+    "message": "Gespeichert, Zugriff erteilt."
+  },
+  "optionsAutoScanHeading": {
+    "message": "Angebote automatisch finden"
+  },
+  "optionsAutoScanRowDesc": {
+    "message": "Liest nur den Titel jeder Seite, damit die Zahl am Symbol stimmt, ohne das Popup zu öffnen. Braucht die weitreichende Berechtigung für alle Seiten."
+  },
+  "optionsAutoScanOnTitle": {
+    "message": "An"
+  },
+  "optionsAutoScanOffTitle": {
+    "message": "Aus"
+  },
+  "optionsAutoScanOnDesc": {
+    "message": "Angebote werden auf jeder besuchten Seite gesucht."
+  },
+  "optionsAutoScanOffDesc": {
+    "message": "Öffne das Popup von Hand, um nach Angeboten zu suchen."
+  },
+  "optionsAsksPermission": {
+    "message": "Fragt nach Berechtigung"
+  },
+  "optionsNotifyLabel": {
+    "message": "Wenn ein Treffer gefunden wird"
+  },
+  "optionsNotifyRowDesc": {
+    "message": "Meldet sich einmal pro Seite und nur, solange die automatische Suche an ist."
+  },
+  "optionsNotifySilentShort": {
+    "message": "Nur die Zahl am Symbol"
+  },
+  "optionsNotifySilentDesc": {
+    "message": "Das Symbol in der Leiste trägt eine Zahl. Sonst passiert nichts."
+  },
+  "optionsNotifyNotificationShort": {
+    "message": "Desktop-Benachrichtigung"
+  },
+  "optionsNotifyNotificationDesc": {
+    "message": "Eine Systembenachrichtigung nennt das Angebot; ein Klick wechselt zu diesem Tab."
+  },
+  "optionsNotifyPopupShort": {
+    "message": "Popup automatisch öffnen"
+  },
+  "optionsNotifyPopupDesc": {
+    "message": "Chrome erlaubt das nur in bestimmten Situationen – sonst wird auf eine Benachrichtigung zurückgefallen."
+  },
+  "optionsMutedHeading": {
+    "message": "Abgeschaltete Seiten"
+  },
+  "optionsMutedRowDesc": {
+    "message": "Wird im Popup je Seite gesetzt. Die Zahl am Symbol bleibt dort – nur die automatische Meldung unterbleibt."
+  },
+  "optionsMutedNone": {
+    "message": "Keine – die Erweiterung meldet sich überall."
+  },
+  "optionsMutedTemporary": {
+    "message": "bis Browser-Ende"
+  },
+  "optionsMutedRemoveBtn": {
+    "message": "Wieder einschalten"
+  },
+  "optionsCatalogHeading": {
+    "message": "Angebotskatalog"
+  },
+  "optionsCatalogRowDesc": {
+    "message": "Markennamen sind stabil, Rabatthöhen nicht. Erneuere den Katalog, wenn eine Zahl falsch aussieht."
+  },
+  "optionsCatalogOffers": {
+    "message": "$COUNT$ Angebote",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsCatalogMeta": {
+    "message": "Vor $AGE$ aktualisiert · nächster automatischer Abgleich in $NEXT$",
+    "placeholders": {
+      "age": {
+        "content": "$1"
+      },
+      "next": {
+        "content": "$2"
+      }
+    }
+  },
+  "optionsCatalogMetaStale": {
+    "message": "Vor $AGE$ aktualisiert · wird automatisch erneuert",
+    "placeholders": {
+      "age": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsCatalogRefreshBtn": {
+    "message": "Jetzt erneuern"
+  },
+  "optionsCatalogNone": {
+    "message": "Noch kein Katalog – er wird beim nächsten Surfen geladen."
+  },
+  "optionsCatalogSyncing": {
+    "message": "Katalog wird geladen…"
+  },
+  "optionsCatalogErrNotLoggedIn": {
+    "message": "Nicht im Portal angemeldet – melde dich dort zuerst an."
+  },
+  "optionsCatalogErrNoPermission": {
+    "message": "Erlaube zuerst den Zugriff auf das Portal (oben)."
+  },
+  "optionsCatalogErrNoPortal": {
+    "message": "Trage zuerst deine Portal-URL ein (oben)."
+  },
+  "optionsCatalogErrGeneric": {
+    "message": "Katalog-Aktualisierung fehlgeschlagen."
+  },
+  "optionsHowHeading": {
+    "message": "So funktioniert es & rechtlicher Hinweis"
+  },
+  "optionsHowRowDesc": {
+    "message": "Vollständig erhalten, aber den Einstellungen aus dem Weg."
+  },
+  "optionsHowLi1": {
+    "message": "Du musst in diesem Browser bereits bei deinem CB-Portal angemeldet sein – die Erweiterung nutzt diese Sitzung und sieht oder speichert dein Passwort nie."
+  },
+  "optionsHowLi2": {
+    "message": "Beim Besuch einer Website rät die Erweiterung anhand der Domain einen Markennamen und gleicht ihn mit dem lokalen Katalog ab."
+  },
+  "optionsHowLi3": {
+    "message": "Es wird nichts irgendwohin gesendet außer Anfragen an das Portal, das du hier freigibst."
+  },
+  "setupEyebrow": {
+    "message": "Einmalige Einrichtung"
+  },
+  "setupHeading": {
+    "message": "Wo meldest du dich für Mitarbeiterangebote an?"
+  },
+  "setupLede": {
+    "message": "Jeder Arbeitgeber hat seine eigene Portaladresse. Trage deine ein und bestätige die Abfrage – das erlaubt den Zugriff auf genau diese eine Domain, nicht mehr. Dein Passwort bekommt die Erweiterung nie zu sehen."
+  },
+  "setupContinue": {
+    "message": "Weiter"
+  },
+  "setupStep1Title": {
+    "message": "Adresse eintragen"
+  },
+  "setupStep1Desc": {
+    "message": "Zugriff auf diese eine Domain bestätigen."
+  },
+  "setupStep2Title": {
+    "message": "Einmal anmelden"
+  },
+  "setupStep2Desc": {
+    "message": "In einem normalen Tab, wie immer."
+  },
+  "setupStep3Title": {
+    "message": "Surfen"
+  },
+  "setupStep3Desc": {
+    "message": "Das Symbol zählt die Angebote zur Seite, auf der du bist."
+  },
+  "setupFootnote": {
+    "message": "Inoffiziell · steht in keiner Verbindung zur corporate benefits Germany GmbH, wird von ihr weder betrieben noch unterstützt."
+  },
+  "notifyDealTitle": {
+    "message": "$DISCOUNT$ auf $BRAND$",
+    "placeholders": {
+      "discount": {
+        "content": "$1"
+      },
+      "brand": {
+        "content": "$2"
+      }
+    }
+  },
+  "notifyOneDeal": {
+    "message": "Ein Angebot wartet in deinem Portal auf die Seite, die du gerade liest."
+  },
+  "notifyMultipleDeals": {
+    "message": "$COUNT$ Angebote warten in deinem Portal auf die Seite, die du gerade liest.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifySeeDeals": {
+    "message": "Angebote ansehen"
+  },
+  "notifyDismiss": {
+    "message": "Jetzt nicht"
+  },
+  "catalogAgeMinutes": {
+    "message": "$N$ Min.",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeHours": {
+    "message": "$N$ Std.",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeDays": {
+    "message": "$N$ Tagen",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeShortMinutes": {
+    "message": "$N$ Min.",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeShortHours": {
+    "message": "$N$ Std.",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeShortDays": {
+    "message": "$N$ T.",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "disclaimerHeading": {
+    "message": "Rechtlicher Hinweis"
+  },
+  "disclaimerAffiliation": {
+    "message": "Dies ist ein privates, inoffizielles Werkzeug. Es steht in keiner Verbindung zur corporate benefits Germany GmbH, wird von ihr weder betrieben noch unterstützt oder geprüft. Alle Marken-, Produktnamen und Logos gehören ihren jeweiligen Eigentümern."
+  },
+  "disclaimerServerLoad": {
+    "message": "Der Angebotskatalog wird bewusst nur einmal pro Woche geladen – gestaffelt statt in einem Schwall – und der gesamte Abgleich danach passiert lokal in deinem Browser. Das geschieht ausdrücklich, um die Last auf den Servern von corporate benefits so gering wie möglich zu halten: statt einer Suchanfrage bei jedem Seitenaufruf gibt es nur eine Handvoll Anfragen pro Woche."
+  },
+  "disclaimerAccuracy": {
+    "message": "Die Rabattangaben stammen aus dem lokal zwischengespeicherten Katalog und können veraltet sein. Maßgeblich ist allein die Angebotsseite im Portal selbst. Keine Gewähr, keine Haftung."
+  },
+  "disclaimerConfidential": {
+    "message": "Die Angebote und Rabattcodes unterliegen den Nutzungsbedingungen deines Portals und sind vertraulich. Sie sind nur für berechtigte Mitarbeitende bestimmt und dürfen nicht an Dritte weitergegeben oder veröffentlicht werden."
+  }
+}

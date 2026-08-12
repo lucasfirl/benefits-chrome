@@ -1,0 +1,4 @@
+dist/
+.playwright-mcp/
+*.zip
+node_modules/

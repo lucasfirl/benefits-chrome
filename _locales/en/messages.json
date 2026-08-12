@@ -1,0 +1,545 @@
+{
+  "appName": {
+    "message": "CB Deal Finder"
+  },
+  "appDescription": {
+    "message": "Finds deals from your employee benefits portal for the site you're on. Unofficial – not affiliated with corporate benefits Germany GmbH."
+  },
+  "popupWordmark": {
+    "message": "Deal Finder"
+  },
+  "popupSettingsTitle": {
+    "message": "Settings"
+  },
+  "popupLoading": {
+    "message": "Checking this site…"
+  },
+  "popupMatches": {
+    "message": "$N$ matches",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupMatchesOne": {
+    "message": "1 match"
+  },
+  "popupFiguresAsOf": {
+    "message": "Figures as of $DATE$ · portal page is authoritative",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNoDeals": {
+    "message": "No matching deals found."
+  },
+  "popupNoMatchHeading": {
+    "message": "Nothing on file for $BRAND$",
+    "placeholders": {
+      "brand": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNoMatchBody": {
+    "message": "No offer in your catalogue matches this site. Search by hand if you expected one."
+  },
+  "popupNoPortalStep": {
+    "message": "Step 1 of 1"
+  },
+  "popupNoPortalHeading": {
+    "message": "Tell it where your portal lives"
+  },
+  "popupNoPortalBody": {
+    "message": "Every employer has its own address. Set it once, and the badge starts counting deals on the sites you visit."
+  },
+  "popupNoPortalBtn": {
+    "message": "Set it up"
+  },
+  "popupNoPermissionChip": {
+    "message": "Access needed"
+  },
+  "popupNoPermissionHeading": {
+    "message": "Approve access to your portal"
+  },
+  "popupNoPermissionBody": {
+    "message": "The extension may only read the one domain you approve. Nothing wider is requested."
+  },
+  "popupGrantAccessBtn": {
+    "message": "Grant access"
+  },
+  "popupSessionEndedChip": {
+    "message": "Session ended"
+  },
+  "popupNotLoggedInHeading": {
+    "message": "Sign in to your portal to see deals"
+  },
+  "popupNotLoggedInBody": {
+    "message": "Deals are read with the login you already hold in this browser — no password is ever stored here."
+  },
+  "popupOpenPortalBtn": {
+    "message": "Open portal"
+  },
+  "popupTryAgainBtn": {
+    "message": "Try again"
+  },
+  "popupNotApplicableHeading": {
+    "message": "Nothing to look up here"
+  },
+  "popupNotApplicable": {
+    "message": "No deals to find for this page."
+  },
+  "popupDefaultHint": {
+    "message": "Open a website to find deals for it."
+  },
+  "popupErrorChip": {
+    "message": "Error"
+  },
+  "popupErrorHeading": {
+    "message": "Couldn't reach your portal"
+  },
+  "popupErrorNotice": {
+    "message": "Something went wrong checking your portal: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSearchPlaceholder": {
+    "message": "Search any brand"
+  },
+  "popupSearchClear": {
+    "message": "Clear"
+  },
+  "popupSearching": {
+    "message": "Searching…"
+  },
+  "popupSearchResults": {
+    "message": "$N$ results · searched live",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupSearchResultsOne": {
+    "message": "1 result · searched live"
+  },
+  "popupManualErrNotLoggedIn": {
+    "message": "You're not logged in to your CB portal."
+  },
+  "popupManualErrNoPermission": {
+    "message": "Grant portal access first (see above)."
+  },
+  "popupManualErrNoPortal": {
+    "message": "Set up your CB portal URL in settings first."
+  },
+  "popupManualErrGeneric": {
+    "message": "Search failed."
+  },
+  "popupAutoOn": {
+    "message": "On"
+  },
+  "popupAutoOnTitle": {
+    "message": "Alert automatically on this site again"
+  },
+  "popupAutoSession": {
+    "message": "Pause"
+  },
+  "popupAutoSessionTitle": {
+    "message": "Off for this site until the browser is closed"
+  },
+  "popupAutoAlways": {
+    "message": "Never"
+  },
+  "popupAutoAlwaysTitle": {
+    "message": "Off for this site for good"
+  },
+  "popupAutoStateOn": {
+    "message": "Alerts here automatically"
+  },
+  "popupAutoStateSession": {
+    "message": "Off here until the browser closes"
+  },
+  "popupAutoStateAlways": {
+    "message": "Off here for good"
+  },
+  "popupCatalogBar": {
+    "message": "$COUNT$ offers · $AGE$ old",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "age": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupCatalogRefresh": {
+    "message": "Refresh"
+  },
+  "popupCatalogSyncing": {
+    "message": "Updating catalogue…"
+  },
+  "popupCatalogNone": {
+    "message": "No catalogue yet"
+  },
+  "popupCatalogErr": {
+    "message": "Update failed"
+  },
+  "catalogLoginLink": {
+    "message": "Log in to the portal"
+  },
+  "optionsPageTitle": {
+    "message": "CB Deal Finder – Settings"
+  },
+  "optionsModeSettings": {
+    "message": "Settings"
+  },
+  "optionsModeSetup": {
+    "message": "Setup"
+  },
+  "optionsStatusHeading": {
+    "message": "Status"
+  },
+  "optionsStatusWorking": {
+    "message": "Working"
+  },
+  "optionsStatusNeedsSetup": {
+    "message": "Needs setup"
+  },
+  "optionsStatusNoAccess": {
+    "message": "Access needed"
+  },
+  "optionsStatusSignedOut": {
+    "message": "Signed out"
+  },
+  "optionsFactPortal": {
+    "message": "Portal"
+  },
+  "optionsFactSession": {
+    "message": "Session"
+  },
+  "optionsFactCatalogue": {
+    "message": "Catalogue"
+  },
+  "optionsFactCatalogueValue": {
+    "message": "$COUNT$ · $AGE$ old",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "age": {
+        "content": "$2"
+      }
+    }
+  },
+  "optionsFactAutoScan": {
+    "message": "Auto scanning"
+  },
+  "optionsFactRequests": {
+    "message": "Portal requests / week"
+  },
+  "optionsSessionSignedIn": {
+    "message": "signed in"
+  },
+  "optionsSessionSignedOut": {
+    "message": "signed out"
+  },
+  "optionsSessionUnknown": {
+    "message": "unknown"
+  },
+  "optionsValueOn": {
+    "message": "on"
+  },
+  "optionsValueOff": {
+    "message": "off"
+  },
+  "optionsValueNotSet": {
+    "message": "not set"
+  },
+  "optionsValueNone": {
+    "message": "none yet"
+  },
+  "optionsPanelNote": {
+    "message": "The catalogue downloads once a week; every match after that is decided on your machine. That is why a heavy browsing day costs the portal nothing."
+  },
+  "optionsPortalRowTitle": {
+    "message": "Portal address"
+  },
+  "optionsPortalRowDesc": {
+    "message": "Set once per install. Approving grants access to that one domain — nothing wider."
+  },
+  "optionsInputPlaceholder": {
+    "message": "yourcompany.mitarbeiterangebote.de"
+  },
+  "optionsSaveBtn": {
+    "message": "Save"
+  },
+  "optionsStatusInvalid": {
+    "message": "Please enter a valid portal address."
+  },
+  "optionsStatusNotGranted": {
+    "message": "Access wasn't granted, so the extension can't reach your portal yet."
+  },
+  "optionsStatusSavedGranted": {
+    "message": "Saved and access granted."
+  },
+  "optionsAutoScanHeading": {
+    "message": "Find deals automatically"
+  },
+  "optionsAutoScanRowDesc": {
+    "message": "Reads only each page's title, so the badge is right without opening the popup. Needs the broad all-sites permission."
+  },
+  "optionsAutoScanOnTitle": {
+    "message": "On"
+  },
+  "optionsAutoScanOffTitle": {
+    "message": "Off"
+  },
+  "optionsAutoScanOnDesc": {
+    "message": "Deals are found on every site you visit."
+  },
+  "optionsAutoScanOffDesc": {
+    "message": "Open the popup manually to look for deals."
+  },
+  "optionsAsksPermission": {
+    "message": "Asks permission"
+  },
+  "optionsNotifyLabel": {
+    "message": "When a match is found"
+  },
+  "optionsNotifyRowDesc": {
+    "message": "Fires once per page, and only while automatic finding is on."
+  },
+  "optionsNotifySilentShort": {
+    "message": "Badge only"
+  },
+  "optionsNotifySilentDesc": {
+    "message": "The toolbar icon carries a count. Nothing else happens."
+  },
+  "optionsNotifyNotificationShort": {
+    "message": "Desktop notification"
+  },
+  "optionsNotifyNotificationDesc": {
+    "message": "A system notification naming the deal; clicking it switches to that tab."
+  },
+  "optionsNotifyPopupShort": {
+    "message": "Open the popup automatically"
+  },
+  "optionsNotifyPopupDesc": {
+    "message": "Chrome permits this only in some situations — otherwise it falls back to a notification."
+  },
+  "optionsMutedHeading": {
+    "message": "Sites you switched off"
+  },
+  "optionsMutedRowDesc": {
+    "message": "Set per site in the popup. The badge still counts there — only the automatic alert stops."
+  },
+  "optionsMutedNone": {
+    "message": "None — the extension alerts everywhere."
+  },
+  "optionsMutedTemporary": {
+    "message": "until browser closes"
+  },
+  "optionsMutedRemoveBtn": {
+    "message": "Turn back on"
+  },
+  "optionsCatalogHeading": {
+    "message": "Offer catalogue"
+  },
+  "optionsCatalogRowDesc": {
+    "message": "Brand names are stable; discount amounts are not. Refresh if a figure looks wrong."
+  },
+  "optionsCatalogOffers": {
+    "message": "$COUNT$ offers",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsCatalogMeta": {
+    "message": "Updated $AGE$ ago · next automatic sync in $NEXT$",
+    "placeholders": {
+      "age": {
+        "content": "$1"
+      },
+      "next": {
+        "content": "$2"
+      }
+    }
+  },
+  "optionsCatalogMetaStale": {
+    "message": "Updated $AGE$ ago · will refresh automatically",
+    "placeholders": {
+      "age": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsCatalogRefreshBtn": {
+    "message": "Update now"
+  },
+  "optionsCatalogNone": {
+    "message": "No catalogue yet — it will be downloaded on your next browsing session."
+  },
+  "optionsCatalogSyncing": {
+    "message": "Downloading catalogue…"
+  },
+  "optionsCatalogErrNotLoggedIn": {
+    "message": "Not logged in to your portal — log in there first."
+  },
+  "optionsCatalogErrNoPermission": {
+    "message": "Grant portal access first (above)."
+  },
+  "optionsCatalogErrNoPortal": {
+    "message": "Set your portal URL first (above)."
+  },
+  "optionsCatalogErrGeneric": {
+    "message": "Catalogue update failed."
+  },
+  "optionsHowHeading": {
+    "message": "How this works & legal notice"
+  },
+  "optionsHowRowDesc": {
+    "message": "Kept in full, out of the way of the controls."
+  },
+  "optionsHowLi1": {
+    "message": "You must already be logged in to your CB portal in this browser — the extension reuses that session and never sees or stores your password."
+  },
+  "optionsHowLi2": {
+    "message": "When you visit a site, the extension guesses a brand name from its domain and matches it against the local catalogue."
+  },
+  "optionsHowLi3": {
+    "message": "Nothing is sent anywhere except requests to the portal origin you approve here."
+  },
+  "setupEyebrow": {
+    "message": "One-time setup"
+  },
+  "setupHeading": {
+    "message": "Where do you log in for employee deals?"
+  },
+  "setupLede": {
+    "message": "Every employer has its own portal address. Paste yours and approve the prompt — that grants access to this one domain, nothing wider. Your password never touches the extension."
+  },
+  "setupContinue": {
+    "message": "Continue"
+  },
+  "setupStep1Title": {
+    "message": "Set the address"
+  },
+  "setupStep1Desc": {
+    "message": "Approve access to that one domain."
+  },
+  "setupStep2Title": {
+    "message": "Log in once"
+  },
+  "setupStep2Desc": {
+    "message": "In a normal tab, as you always do."
+  },
+  "setupStep3Title": {
+    "message": "Browse"
+  },
+  "setupStep3Desc": {
+    "message": "The badge counts deals on the site you're on."
+  },
+  "setupFootnote": {
+    "message": "Unofficial · not affiliated with, operated by or endorsed by corporate benefits Germany GmbH."
+  },
+  "notifyDealTitle": {
+    "message": "$DISCOUNT$ on $BRAND$",
+    "placeholders": {
+      "discount": {
+        "content": "$1"
+      },
+      "brand": {
+        "content": "$2"
+      }
+    }
+  },
+  "notifyOneDeal": {
+    "message": "An offer waits on your portal for the site you're reading."
+  },
+  "notifyMultipleDeals": {
+    "message": "$COUNT$ offers wait on your portal for the site you're reading.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifySeeDeals": {
+    "message": "See the deals"
+  },
+  "notifyDismiss": {
+    "message": "Not now"
+  },
+  "catalogAgeMinutes": {
+    "message": "$N$ min",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeHours": {
+    "message": "$N$ h",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeDays": {
+    "message": "$N$ d",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeShortMinutes": {
+    "message": "$N$m",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeShortHours": {
+    "message": "$N$h",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "catalogAgeShortDays": {
+    "message": "$N$d",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "disclaimerHeading": {
+    "message": "Legal notice"
+  },
+  "disclaimerAffiliation": {
+    "message": "This is a private, unofficial tool. It is not affiliated with, operated by, endorsed by, or reviewed by corporate benefits Germany GmbH. All brand names, product names and logos belong to their respective owners."
+  },
+  "disclaimerServerLoad": {
+    "message": "The offer catalogue is deliberately downloaded only once a week – staggered rather than in one burst – and all matching afterwards happens locally in your browser. This is done explicitly to keep load on corporate benefits' servers as low as possible: instead of a search request on every page you visit, only a handful of requests are made per week."
+  },
+  "disclaimerAccuracy": {
+    "message": "Discount figures come from the locally cached catalogue and may be out of date. Only the offer page on the portal itself is authoritative. No warranty, no liability."
+  },
+  "disclaimerConfidential": {
+    "message": "The offers and discount codes are subject to your portal's terms of use and are confidential. They are intended for eligible employees only and must not be shared with third parties or published."
+  }
+}
