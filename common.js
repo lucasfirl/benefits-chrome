@@ -494,8 +494,15 @@ function normalizeName(value) {
  * Prueft, ob ein geratener Markenname (aus Domain/Titel) zu einem
  * Katalog-Markennamen passt. Bewusst konservativ, damit nicht jede Domain
  * zufaellig auf eine kurze Marke wie "On" oder "BYD" passt.
+ *
+ * `options.exact` schaltet die beiden Praefix-Regeln ab. Das ist fuer
+ * Kandidaten aus dem Seitentitel gedacht: die entstehen durch Zerlegen an
+ * Trennzeichen und sind darum haeufig gar keine Marke. "lucasfirl/VM-Manager"
+ * liefert das Bruchstueck "Manager" - mit Praefix-Regel traefe das "manager
+ * magazin", also ein Angebot, das mit der Seite nichts zu tun hat.
  */
-function namesMatch(candidate, brand) {
+function namesMatch(candidate, brand, options) {
+  const exactOnly = !!(options && options.exact);
   const cs = normalizeNameVariants(candidate);
   const bs = normalizeNameVariants(brand);
   for (const c of cs) {
@@ -504,6 +511,7 @@ function namesMatch(candidate, brand) {
       if (b.length < 2) continue;
       // Exakt: auch kurze Marken wie "On" oder "BYD" duerfen treffen.
       if (c === b) return true;
+      if (exactOnly) continue;
       // "bosch" trifft "boschsiemenshausgeraete" - beide Seiten muessen lang
       // genug sein, sonst passt "on" auf jede Marke, die mit "on" beginnt.
       if (c.length >= 4 && b.length >= 4 && b.startsWith(c)) return true;
@@ -512,6 +520,18 @@ function namesMatch(candidate, brand) {
     }
   }
   return false;
+}
+
+// Ein Kandidat ist entweder ein blosser Suchbegriff oder ein Objekt
+// { term, exact } - letzteres fuer Begriffe aus dem Seitentitel, die nur
+// exakt treffen duerfen (siehe namesMatch).
+function candidateTerm(entry) {
+  if (!entry) return "";
+  return typeof entry === "string" ? entry : String(entry.term || "");
+}
+
+function candidateIsExact(entry) {
+  return !!(entry && typeof entry === "object" && entry.exact);
 }
 
 /**
@@ -523,15 +543,37 @@ function matchCatalog(offers, candidates) {
   const hits = [];
   const seen = new Set();
   for (const candidate of candidates || []) {
+    const term = candidateTerm(candidate);
+    if (!term) continue;
+    const options = { exact: candidateIsExact(candidate) };
     for (const offer of offers || []) {
       if (seen.has(offer.id)) continue;
-      if (namesMatch(candidate, offer.brand || offer.title)) {
+      if (namesMatch(term, offer.brand || offer.title, options)) {
         seen.add(offer.id);
-        hits.push({ offer, matchedOn: candidate });
+        hits.push({ offer, matchedOn: term });
       }
     }
   }
   return hits;
+}
+
+// --- Woraus der Markenname geraten wird -----------------------------------
+//
+// Die Domain ist die verlaessliche Quelle: sie gehoert dem Anbieter. Der
+// Seitentitel ist die ergiebigere, aber unsauberere - er faengt Marken, deren
+// Domain sich nicht in Woerter zerlegen laesst ("easyairportparking.de"),
+// bringt aber auf Seiten wie GitHub oder in Foren Bruchstuecke mit, die keine
+// Marke sind. Wem das zu viel ist, der schaltet den Titel hier ab.
+const CB_MATCH_SOURCES_KEY = "cbMatchSources"; // "domain" | "domain+title"
+const CB_MATCH_SOURCES_DEFAULT = "domain+title";
+
+async function getMatchSources() {
+  try {
+    const stored = await chrome.storage.sync.get(CB_MATCH_SOURCES_KEY);
+    return stored[CB_MATCH_SOURCES_KEY] === "domain" ? "domain" : CB_MATCH_SOURCES_DEFAULT;
+  } catch (e) {
+    return CB_MATCH_SOURCES_DEFAULT;
+  }
 }
 
 /**
@@ -569,6 +611,10 @@ if (typeof module !== "undefined") {
     normalizeNameVariants,
     namesMatch,
     matchCatalog,
+    candidateTerm,
+    candidateIsExact,
+    CB_MATCH_SOURCES_KEY,
+    CB_MATCH_SOURCES_DEFAULT,
     formatCatalogAge,
     formatCatalogAgeShort,
     formatCachedAt,

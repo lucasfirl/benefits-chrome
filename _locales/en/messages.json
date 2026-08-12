@@ -378,6 +378,24 @@
   "optionsNotifyPopupDesc": {
     "message": "Chrome permits this only in some situations — otherwise it falls back to a notification."
   },
+  "optionsSourcesHeading": {
+    "message": "What counts as the brand name"
+  },
+  "optionsSourcesRowDesc": {
+    "message": "The domain always counts. The page title finds more, but on sites that aren't shops it can produce a stray word."
+  },
+  "optionsSourcesBothShort": {
+    "message": "Domain and page title"
+  },
+  "optionsSourcesBothDesc": {
+    "message": "Also catches brands whose domain doesn't split into words, e.g. easyairportparking.de. A title only counts when it matches a brand name exactly."
+  },
+  "optionsSourcesDomainShort": {
+    "message": "Domain only"
+  },
+  "optionsSourcesDomainDesc": {
+    "message": "The strictest setting: only the site's own address is used. Fewer matches, and nothing derived from what a page happens to be called."
+  },
   "optionsMutedHeading": {
     "message": "Sites you switched off"
   },

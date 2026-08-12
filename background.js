@@ -244,19 +244,26 @@ async function getPortalOrigin() {
   return stored[CB_STORAGE_KEY] || null;
 }
 
+/**
+ * Vereinheitlicht die Kandidatenliste zu Eintraegen { term, exact } und wirft
+ * Dubletten raus. Taucht derselbe Begriff aus beiden Quellen auf - "Bosch"
+ * steht im Titel UND in der Domain -, gewinnt die grosszuegigere Regel;
+ * sonst naehme der Titel der Domain ihre Praefix-Treffer weg.
+ */
 function dedupeCandidates(list) {
-  const seen = new Set();
-  const out = [];
+  const byKey = new Map();
   for (const raw of list) {
-    if (!raw) continue;
-    const term = String(raw).trim();
+    const term = candidateTerm(raw).trim();
     if (!term) continue;
     const key = term.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(term);
+    const existing = byKey.get(key);
+    if (existing) {
+      if (existing.exact && !candidateIsExact(raw)) existing.exact = false;
+      continue;
+    }
+    byKey.set(key, { term, exact: candidateIsExact(raw) });
   }
-  return out;
+  return [...byKey.values()];
 }
 
 async function hasPortalPermission(portalOrigin) {
@@ -306,7 +313,14 @@ async function scanTab(tabId, url, extraCandidates, scanId) {
     return;
   }
 
-  const candidates = dedupeCandidates([...(extraCandidates || []), ...guessBrandCandidates(hostname)]);
+  // Der Seitentitel ist abschaltbar (Einstellungen). Bleibt er an, zaehlen
+  // seine Begriffe nur als exakte Treffer - Titel werden an Trennzeichen
+  // zerlegt und liefern oft Bruchstuecke, die keine Marke sind.
+  const useTitle = (await getMatchSources()) !== "domain";
+  const hintCandidates = useTitle
+    ? (extraCandidates || []).map((term) => ({ term: candidateTerm(term), exact: true }))
+    : [];
+  const candidates = dedupeCandidates([...hintCandidates, ...guessBrandCandidates(hostname)]);
   if (candidates.length === 0) {
     commit({ status: STATUS.OK, portalOrigin, deals: [], brand: null });
     return;
@@ -343,16 +357,23 @@ async function scanTab(tabId, url, extraCandidates, scanId) {
   try {
     let deals = [];
     let brandUsed = null;
-    for (const term of candidates) {
-      const result = await searchPortal(portalOrigin, term);
+    for (const candidate of candidates) {
+      const result = await searchPortal(portalOrigin, candidate.term);
       if (result === "not-logged-in") {
         noteLoggedOut();
         commit({ status: STATUS.NOT_LOGGED_IN, portalOrigin });
         return;
       }
-      if (result.length > 0) {
-        deals = result;
-        brandUsed = term;
+      // Die Portalsuche ist grosszuegig - sie liefert zu "Manager" auch
+      // "manager magazin". Fuer Titel-Kandidaten dieselbe strenge Regel
+      // anlegen wie beim Katalogabgleich, sonst haengt das Ergebnis nur
+      // davon ab, ob gerade ein Katalog vorliegt.
+      const filtered = candidate.exact
+        ? result.filter((d) => namesMatch(candidate.term, d.brand || d.title, { exact: true }))
+        : result;
+      if (filtered.length > 0) {
+        deals = filtered;
+        brandUsed = candidate.term;
         break;
       }
     }
@@ -366,18 +387,46 @@ async function scanTab(tabId, url, extraCandidates, scanId) {
 
 /**
  * Fetches a path from the portal using the user's existing session.
- * Returns "not-logged-in" if the portal redirected to its login page.
+ * Returns "not-logged-in" if the portal redirected us away from the
+ * requested page - to its login form, to another tenant's domain, or
+ * back to the start page. Portale melden eine abgelaufene Sitzung nicht
+ * einheitlich; ohne diese Pruefung haetten wir jede Umleitung als
+ * gueltige (aber leere) Seite geparst und den Katalog stillschweigend
+ * als "keine Angebote" abgehakt.
  */
 async function fetchPortalHtml(portalOrigin, path) {
-  const url = portalOrigin.replace(/\/+$/, "") + path;
+  const base = portalOrigin.replace(/\/+$/, "");
+  const url = base + path;
   const response = await fetch(url, { credentials: "include", redirect: "follow" });
-  if (response.redirected && /\/login(\?|$)/.test(new URL(response.url).pathname)) {
+  if (response.redirected && isLoggedOutRedirect(base, path, response.url)) {
     return "not-logged-in";
   }
   if (!response.ok) {
     throw new Error("Portal returned HTTP " + response.status);
   }
   return response.text();
+}
+
+/**
+ * Decides whether a followed redirect means "session gone" rather than a
+ * harmless canonical redirect (z. B. Trailing-Slash oder http -> https).
+ */
+function isLoggedOutRedirect(base, requestedPath, finalUrl) {
+  let final;
+  let origin;
+  try {
+    final = new URL(finalUrl);
+    origin = new URL(base);
+  } catch (err) {
+    return false;
+  }
+  // Anderer Mandant / andere Domain -> unsere Sitzung gilt dort nicht.
+  if (final.origin !== origin.origin) return true;
+  if (/\/(login|signin|anmelden|logout)(\/|\?|$)/i.test(final.pathname)) return true;
+  // Unterseite -> Startseite ist die uebliche stille Abweisung.
+  const wanted = requestedPath.split("?")[0].replace(/\/+$/, "");
+  const landed = final.pathname.replace(/\/+$/, "");
+  return wanted !== "" && landed === "";
 }
 
 /**
