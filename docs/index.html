@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CB Deal Finder — employee-benefit deals for the site you're on</title>
+<meta name="description" content="A Chrome extension that tells you when the site you're browsing has an offer waiting in your employee-benefits portal. Unofficial, local-only matching, no tracking.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="icons/icon48.png">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="shell">
+    <img src="icons/icon48.png" alt="" width="18" height="18">
+    <span class="wordmark">CB Deal Finder</span>
+    <nav class="topnav">
+      <a href="#how">How it works</a>
+      <a href="#load" class="hide-narrow">Portal load</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/lucasfirl/benefits-chrome" class="hide-narrow">GitHub</a>
+      <a href="https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj">Get it</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ---------------------------------------------------------------- -->
+  <section class="hero">
+    <div class="shell">
+      <div>
+        <p class="eyebrow">Chrome extension · Manifest V3 · unofficial</p>
+        <h1>The site you're on might already be discounted.</h1>
+        <p class="lede">
+          CB Deal Finder checks whatever page you're browsing against your
+          employer's Corporate&nbsp;Benefits portal and puts a count on the
+          toolbar icon when there's an offer. One click takes you to it.
+        </p>
+        <p class="lede">
+          It uses the login you already hold in your browser — it never asks
+          for a password — and it downloads the offer catalogue once a week so
+          that every match afterwards is decided on your own machine.
+        </p>
+
+        <div class="actions">
+          <a class="btn" href="https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj">Add to Chrome</a>
+          <a class="btn outline" href="https://github.com/lucasfirl/benefits-chrome">Source on GitHub</a>
+        </div>
+
+        <p class="hero-note">
+          On the Chrome Web Store, in English or German (auto-selected from
+          your browser). You need an existing account on your employer's
+          benefits portal.
+        </p>
+      </div>
+
+      <!-- Real popup, sample data: actual portal offers are confidential and
+           must not be reproduced publicly. -->
+      <div>
+        <img class="shot" src="popup-en.png" width="498" height="572"
+             alt="The extension's popup listing three matching offers for the site being viewed, each with a discount figure, above a brand search box and the catalogue's age.">
+
+        <p class="shot-caption">Sample data — real portal offers are confidential.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section id="how">
+    <div class="shell">
+      <p class="eyebrow">How it works</p>
+      <h2>Set it up once, then forget about it</h2>
+      <p class="section-lede">
+        Every employer has its own portal address — something like
+        <code>yourcompany.mitarbeiterangebote.de</code>. You enter yours once
+        and approve access to that single domain. Nothing wider is requested.
+      </p>
+
+      <ol class="steps">
+        <li>
+          <span class="num">01</span>
+          <h3>The catalogue arrives weekly</h3>
+          <p>
+            The extension reads the portal's own category navigation, then
+            fetches each category page — spaced 1.5&nbsp;s apart, never as a
+            burst — and stores brand names and offer links locally.
+          </p>
+        </li>
+        <li>
+          <span class="num">02</span>
+          <h3>Matching happens offline</h3>
+          <p>
+            A site's brand is guessed from its domain, and optionally from the
+            page title. Both sides are normalised — lowercased, umlauts folded,
+            punctuation dropped — and compared locally. Zero requests.
+          </p>
+        </li>
+        <li>
+          <span class="num">03</span>
+          <h3>The badge counts</h3>
+          <p>
+            Matches show as a number on the toolbar icon. Click it for the
+            list, or search any brand by hand from the same popup regardless of
+            where you are.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section id="load">
+    <div class="shell">
+      <p class="eyebrow">Portal load</p>
+      <h2>Why the catalogue, and not a search per page</h2>
+      <p class="section-lede">
+        The obvious design — query the portal's search on every page you visit
+        — does not scale. Measured on the earlier version of this code, that
+        was around 2.4 requests per page view (misses cost the most, because
+        the candidate loop only stops on a hit), and every tab switch triggered
+        a full rescan with no caching at all.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Design</th>
+              <th class="num">Requests / user / day</th>
+              <th class="num">At 1,000 users</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Search on every page view</td>
+              <td class="num">~600</td>
+              <td class="num">600,000</td>
+            </tr>
+            <tr class="now">
+              <td>Weekly catalogue (what it does now)</td>
+              <td class="num">~2</td>
+              <td class="num">2,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="table-note">
+        The property that matters is that the cost no longer scales with
+        browsing: a heavy surfer costs the portal the same as someone who
+        barely opens their browser. Failed syncs back off rather than retrying
+        on every page, so an expired login can't turn into a steady drip of
+        rejected requests either.
+      </p>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section id="controls">
+    <div class="shell">
+      <p class="eyebrow">Controls</p>
+      <h2>You decide how much it does</h2>
+      <p class="section-lede">
+        Everything beyond the plain badge is opt-in, and every setting can be
+        turned back down.
+      </p>
+
+      <div class="grid">
+        <div>
+          <h3>Automatic finding — off by default</h3>
+          <p>
+            On, it registers a tiny content script that reads a page's
+            <code>&lt;title&gt;</code> and <code>og:site_name</code> — nothing
+            else — so the badge is right without opening the popup. That needs
+            the broad all-sites permission, which is exactly why it's off until
+            you ask for it.
+          </p>
+        </div>
+        <div>
+          <h3>How loudly a match is announced</h3>
+          <p>
+            Badge only, a desktop notification, or an attempt to open the popup
+            (Chrome frequently blocks that outside a click, so it falls back to
+            a notification). Restored tabs after a browser restart never
+            announce themselves — you didn't just open those pages.
+          </p>
+        </div>
+        <div>
+          <h3>Switch sites off, by pattern</h3>
+          <p>
+            Silence a site from the popup — until the browser closes, or for
+            good — or add a pattern in the settings:
+            <code>*.example.com</code> covers every subdomain. The badge keeps
+            counting there; only the alert stops.
+          </p>
+        </div>
+        <div>
+          <h3>What counts as a brand name</h3>
+          <p>
+            The domain always counts. The page title finds more — it's what
+            catches <code>easyairportparking.de</code> — but on sites that
+            aren't shops a stray title fragment can mislead, so titles only
+            ever match a brand exactly, and you can switch them off entirely.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section id="privacy">
+    <div class="shell">
+      <p class="eyebrow">Privacy</p>
+      <h2>Nothing leaves your browser</h2>
+
+      <div class="panel">
+        <ul>
+          <li><strong>No account, no password.</strong> The extension reuses the session your browser already holds with the portal. It doesn't have the <code>cookies</code> permission and cannot read them.</li>
+          <li><strong>One destination.</strong> Requests go only to the portal origin you entered and approved. Not to the developer, not to anyone else.</li>
+          <li><strong>Two fields per page, at most.</strong> The tab's address, and — when enabled — its title and <code>og:site_name</code>. No page content, no form fields, no input.</li>
+          <li><strong>No analytics, no remote code.</strong> Fonts are bundled with the extension rather than fetched. There is nothing to phone home with.</li>
+          <li><strong>Local storage only.</strong> Your portal address, your settings and the cached catalogue live in <code>chrome.storage</code>. Removing the extension deletes all of it, because no copy exists anywhere else.</li>
+        </ul>
+      </div>
+
+      <p style="margin-top:20px">
+        <a class="btn outline" href="privacy.html">Read the full privacy policy</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section id="install">
+    <div class="shell">
+      <p class="eyebrow">Install</p>
+      <h2>Two minutes, once</h2>
+      <p class="section-lede">
+        Install from the Chrome Web Store, then point it at your portal.
+      </p>
+
+      <ol class="install">
+        <li><a href="https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj">Add CB Deal Finder to Chrome</a>, and pin it to the toolbar so you can see the badge.</li>
+        <li>Click the extension icon, then the gear, and enter your portal address — the one you normally sign in at, e.g. <code>yourcompany.mitarbeiterangebote.de</code>. It's checked before it's saved, so a typo can't silently replace a working one.</li>
+        <li>Approve Chrome's prompt. That grants access to that one portal domain and nothing else.</li>
+        <li>Make sure you're signed in to the portal in a normal tab, then browse. The badge starts counting.</li>
+        <li>Optional: in the same settings page, turn on automatic finding and choose how loudly a match is announced.</li>
+      </ol>
+
+      <p class="table-note">
+        Prefer to run it from source? Every release is also published as a ZIP
+        on <a href="https://github.com/lucasfirl/benefits-chrome/releases/latest">GitHub</a>,
+        which you can load via <code>chrome://extensions</code> →
+        <strong>Developer mode</strong> → <strong>Load unpacked</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- -->
+  <section id="limits">
+    <div class="shell">
+      <p class="eyebrow">Honest limits</p>
+      <h2>What it doesn't do</h2>
+      <p class="section-lede">
+        Worth knowing before you install, rather than after.
+      </p>
+
+      <details>
+        <summary>Discount figures can be out of date</summary>
+        <p>
+          Brand names are stable; percentages and monthly specials are not.
+          With a one-week cache lifetime a figure can lag, so the popup always
+          shows the catalogue's age and offers a refresh. The authoritative
+          number is on the portal page the link leads to.
+        </p>
+      </details>
+
+      <details>
+        <summary>Without automatic finding, the badge can under-count</summary>
+        <p>
+          On its own the badge uses the domain guess alone, which is right for
+          most brands but misses ones whose domain doesn't split into words.
+          Opening the popup always runs the more accurate title-based check.
+        </p>
+      </details>
+
+      <details>
+        <summary>Single-page apps may not trigger a rescan</summary>
+        <p>
+          Navigations that don't produce a full page load won't re-run the
+          check until you switch tabs or reload. The popup's manual search
+          covers that case.
+        </p>
+      </details>
+
+      <details>
+        <summary>Regional offers can't be filtered by location</summary>
+        <p>
+          Location-dependent offers are in the catalogue by brand, but the
+          local matcher has no idea where you are. Use the search box for
+          those.
+        </p>
+      </details>
+
+      <details>
+        <summary>One portal at a time</summary>
+        <p>
+          Saving a new portal address replaces the previous one. There's no
+          multi-portal mode.
+        </p>
+      </details>
+
+      <details>
+        <summary>It depends on the portal's HTML</summary>
+        <p>
+          Offers are parsed out of the portal's own pages. If the portal
+          restructures its markup, the parser needs updating — that's the
+          nature of working against a site with no public API.
+        </p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="shell">
+    <div class="footlinks">
+      <a href="https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj">Chrome Web Store</a>
+      <a href="https://github.com/lucasfirl/benefits-chrome">GitHub repository</a>
+      <a href="https://github.com/lucasfirl/benefits-chrome/releases/latest">Releases</a>
+      <a href="privacy.html">Privacy policy</a>
+      <a href="https://github.com/lucasfirl/benefits-chrome/issues">Report an issue</a>
+    </div>
+
+    <p>
+      <strong>This is a private, unofficial tool.</strong> It is not affiliated
+      with, operated by, endorsed by, or reviewed by corporate benefits Germany
+      GmbH or any employee-benefits provider. All brand names, product names
+      and logos referenced belong to their respective owners.
+    </p>
+    <p>
+      Offers and discount codes on such portals are subject to the portal's
+      terms of use and are confidential — intended for eligible employees only,
+      and not to be shared with third parties or published. This tool changes
+      none of that; it only shows you, locally, what your own account can
+      already see. No warranty, no liability.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

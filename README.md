@@ -1,28 +1,39 @@
 # CB Deal Finder
 
-A Chrome extension that scans whatever site you're browsing for matching
-deals on your Corporate Benefits employee portal (`*.mitarbeiterangebote.de`
-and similar CB-powered portals), using the login session you already have in
-your browser. UI is in English or German, auto-selected from your browser's
-language.
+[![CI](https://github.com/lucasfirl/benefits-chrome/actions/workflows/ci.yml/badge.svg)](https://github.com/lucasfirl/benefits-chrome/actions/workflows/ci.yml)
 
-## How it works
+A Chrome extension that tells you when the site you're browsing has an offer
+waiting in your Corporate Benefits employee portal (`*.mitarbeiterangebote.de`
+and similar CB-powered portals). It uses the login session you already hold in
+your browser, and decides every match locally. UI in English or German,
+auto-selected from your browser's language.
 
-- You tell the extension your employer's portal address once (every employer
-  has their own slug, e.g. `yourcompany.mitarbeiterangebote.de`).
-- The extension reuses your existing logged-in session on that portal — it
-  never asks for or stores a password.
+**→ [Add to Chrome](https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj) ·
+[Project page](https://lucasfirl.github.io/benefits-chrome/) ·
+[Privacy policy](https://lucasfirl.github.io/benefits-chrome/privacy.html) ·
+[Releases](https://github.com/lucasfirl/benefits-chrome/releases/latest)**
+
+> Private, unofficial tool. Not affiliated with, operated by, endorsed by or
+> reviewed by corporate benefits Germany GmbH. See [Disclaimer](#disclaimer).
+
+---
+
+## What it does
+
+- You give it your employer's portal address once — every employer has its own
+  slug, e.g. `yourcompany.mitarbeiterangebote.de`. The address is probed before
+  it is saved, so a typo can't silently replace a working one.
+- It reuses your existing logged-in session on that portal. It never asks for
+  or stores a password, and does not hold the `cookies` permission.
 - **The catalogue is downloaded once a week** and matching happens locally,
-  offline. See below — this is what keeps portal load low.
-- Brand matching uses two signals: the site's domain (e.g. `philips.de` →
-  `philips`), and — if you've turned on automatic scanning, or when you open
-  the popup — the page's `<title>` and `og:site_name` meta tag.
-- If there are matches, the toolbar badge shows a count; click the icon to
-  see the deals and jump straight to them on your portal.
-- You can also manually search any brand from the popup, regardless of what
-  site you're on.
+  offline — [this is the point of the design](#why-a-weekly-catalogue).
+- Brand matching uses the site's domain (e.g. `philips.de` → `philips`) and,
+  optionally, the page's `<title>` and `og:site_name`.
+- Matches show as a count on the toolbar badge; click the icon for the list and
+  jump straight to the offer on your portal.
+- You can search any brand by hand from the popup, whatever site you're on.
 
-### The offer catalogue (why it works this way)
+## Why a weekly catalogue
 
 The obvious design — query the portal's search on every page you visit — does
 not scale. Measured on the real code, that was ~2.4 requests per page view
@@ -47,93 +58,166 @@ After that, matching a site is a **local string comparison — zero requests**.
 | per-page search (before) | ~600 | 600,000 |
 | weekly catalogue (now) | **~2** | **2,000** |
 
-The important property is that the cost no longer scales with browsing: a
-heavy surfer costs the same as someone who barely opens the browser.
+The important property is that the cost no longer scales with browsing: a heavy
+surfer costs the same as someone who barely opens the browser. Failed syncs are
+put behind a back-off rather than retried on the next page view, so an expired
+login can't turn into a steady drip of rejected requests either.
 
 Matching normalises both sides (lowercase, umlauts, punctuation removed), so
-`easyairportparking.de` matches "Easy Airport Parking" without needing the
-page title at all. It is deliberately conservative — a short brand like "On"
-matches only exactly, never by prefix, so `onlineshop.de` won't claim a
-discount that doesn't exist. If the catalogue is missing or older than a week,
-the extension falls back to live search so it never appears broken.
+`easyairportparking.de` matches "Easy Airport Parking" without needing the page
+title at all. It is deliberately conservative — a short brand like "On" matches
+only exactly, never by prefix, so `onlineshop.de` won't claim a discount that
+doesn't exist. If the catalogue is missing or older than a week, the extension
+falls back to live search so it never appears broken.
 
-### Automatic scanning (opt-in)
+## Settings
 
-By default, the badge only updates when you switch to/reload a tab, using
-the domain guess alone — accurate for most brands, but it can miss ones like
-the "easyairportparking.de" example above until you open the popup.
+Everything beyond the plain badge is opt-in.
 
-Turning on **Automatic scanning** in Settings additionally registers a tiny
-content script on every page (reads only `document.title` and the
-`og:site_name` meta tag, nothing else) so the badge is accurate immediately,
-without needing to open the popup. This requires granting the extension a
-broader "read every site" permission, which is why it's off by default.
+**Automatic finding** (off by default) registers a tiny content script on every
+page. It reads only `document.title` and the `og:site_name` meta tag — nothing
+else — so the badge is accurate immediately, without opening the popup. This
+needs the broad "read every site" permission, which is exactly why it is off
+until you ask for it. Without it, the badge updates on tab switch/reload using
+the domain guess alone, and the popup does the more accurate check on click.
 
-### Notifications ("how disruptive")
+**How loudly a match is announced** (only applies while automatic finding is
+on):
 
-Also in Settings, once automatic scanning is on, you can choose how loudly a
-match is announced:
-- **Badge only** — no interruption, just the toolbar count.
-- **Desktop notification** — a dismissible OS notification when a page has
-  matches (once per page, not on every scan).
-- **Try to open the popup automatically** (default) — attempts
-  `chrome.action.openPopup()`; Chrome frequently blocks this outside of a direct
-  click, so it silently falls back to a desktop notification when that happens.
+- *Badge only* — no interruption, just the toolbar count.
+- *Desktop notification* — a dismissible OS notification, once per page.
+- *Try to open the popup automatically* (default) — attempts
+  `chrome.action.openPopup()`; Chrome frequently blocks this outside a direct
+  click, so it silently falls back to a desktop notification.
 
-## Install (unpacked, for now)
+Tabs restored at browser startup never announce themselves — you didn't just
+open those pages — but they still count towards the badge.
 
-1. Open `chrome://extensions`.
-2. Enable "Developer mode" (top right).
-3. Click "Load unpacked" and select this folder (`benefits-chrome`).
-4. Click the extension icon → the gear icon (or right-click the icon →
-   Options) and enter your portal address, e.g.
-   `yourcompany.mitarbeiterangebote.de`.
-5. Approve the permission prompt — this grants the extension access to that
-   one portal domain only.
-6. Make sure you're logged in to your CB portal in a regular tab.
-7. (Optional) In the same Settings page, enable "Automatic scanning" and
-   pick a notification style.
-8. Browse to any brand's site — the badge (or popup) shows matching deals.
+**Sites you switched off.** From the popup you can silence a site until the
+browser closes, or for good, and choose whether that covers just the host or
+the whole domain. The settings page lists them and accepts patterns:
+`*.google.com` covers google.com and all its subdomains, `google.*` covers
+google.de and google.com. The badge keeps counting on muted sites; only the
+automatic alert stops.
 
-Whenever you pull code changes for this extension, click the reload icon on
-its card in `chrome://extensions` — background script and manifest changes
-don't apply until you do.
+**What counts as a brand name.** The domain always counts. Page titles find
+more (they're what catches `easyairportparking.de`), but on sites that aren't
+shops a title fragment can produce a stray match — so a title only ever counts
+when it matches a brand name *exactly*, and you can switch titles off entirely
+for the strictest behaviour.
 
-## Limitations / notes
+**Offer catalogue.** Shows the offer count and age, with a manual refresh for
+when a percentage looks wrong.
 
-- Without automatic scanning enabled, the toolbar badge is domain-heuristic
-  only and can under-count until you open the popup (which always does the
-  more accurate title-based check).
-- Automatic scanning needs the broad all-sites permission, since Chrome only
-  lets extensions read page content without a user gesture if they hold that
-  permission. It's opt-in specifically because of that broader access.
-- The "auto-open popup" notification level is best-effort; Chrome's
-  `chrome.action.openPopup()` API is restricted outside direct user
-  gestures and may just fall back to a notification instead.
-- Single-page-app navigations that don't trigger a full page load or a
+## Install
+
+1. [Add CB Deal Finder to Chrome](https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj)
+   and pin it to the toolbar so the badge is visible.
+2. Click the extension icon → the gear (or right-click the icon → Options) and
+   enter your portal address, e.g. `yourcompany.mitarbeiterangebote.de`.
+3. Approve the permission prompt — this grants access to that one portal domain
+   only.
+4. Make sure you're logged in to your CB portal in a regular tab.
+5. (Optional) Enable automatic finding and pick a notification style.
+6. Browse to any brand's site — the badge (or popup) shows matching deals.
+
+### From source
+
+Clone the repo (or unpack a
+[release ZIP](https://github.com/lucasfirl/benefits-chrome/releases/latest)),
+then in `chrome://extensions` enable **Developer mode** and use **Load
+unpacked** on the folder containing `manifest.json`. After pulling changes,
+click the reload icon on the extension's card — background script and manifest
+changes don't apply until you do.
+
+## Development
+
+```powershell
+node test/run-all.js     # all tests, no dependencies beyond Node 22
+.\package.ps1            # build dist/cb-deal-finder-<version>.zip
+```
+
+`package.ps1` builds from an **allowlist**, not an exclusion list: only files
+named in it are packaged. That is deliberate — the project folder also holds
+tests, docs and Playwright snapshots of a real portal, none of which may ever
+ship. `test/package.test.js` checks the allowlist against what the code
+actually references, in both directions.
+
+Passing `-DefaultPortal "https://yourcompany.mitarbeiterangebote.de"` pre-fills
+the portal address for a private build. **Never for a Web Store build** — it
+would put an employer's name in public code.
+
+CI runs the tests on every push and PR and uploads the ZIP as an artifact.
+Pushing a `v*` tag runs [`release.yml`](.github/workflows/release.yml), which
+tests, packages and publishes a GitHub release.
+
+Notes for a Web Store submission — listing copy, per-permission
+justifications, reviewer notes — are in [`STORE-LISTING.md`](STORE-LISTING.md).
+
+### Layout
+
+| Path | What it is |
+|---|---|
+| `manifest.json` | MV3 manifest. |
+| `background.js` | Service worker: watches tabs, syncs and matches the catalogue, manages badge/notifications, answers popup and content-script requests. |
+| `common.js` | Shared helpers — URL normalisation, brand guessing, matching, i18n. |
+| `content-hints.js` | Opt-in content script (registered dynamically when automatic finding is on) reporting page title / `og:site_name`. |
+| `offscreen.js` / `offscreen.html` | Offscreen document that parses the portal's HTML with a real `DOMParser` — service workers have no DOM. |
+| `popup.*` | Toolbar popup UI. |
+| `options.*` | Settings page: status, portal address, automatic finding, notification style, brand sources, mute list, catalogue. |
+| `theme.css`, `fonts/` | Shared design tokens; IBM Plex bundled locally so the UI makes no outbound request. |
+| `_locales/en`, `_locales/de` | UI text; Chrome picks by browser language, falling back to English. |
+| `docs/` | The GitHub Pages site (project page + hosted privacy policy). |
+| `test/` | See below. |
+
+### Tests
+
+Run everything with **`node test/run-all.js`**. The behavioural tests load the
+real `background.js` in a `vm` sandbox with stubbed Chrome APIs, so they assert
+against shipping code rather than a reimplementation.
+
+| Test | Asserts |
+|---|---|
+| `catalog.test.js` | A fresh catalogue makes **zero** portal requests; a stale one falls back to live search. |
+| `matching.test.js` | The local name matcher, including the false positives it must reject. |
+| `match-sources.test.js` | The "what counts as a brand name" setting, with and without page titles. |
+| `scan-order.test.js` | Replays browser event orderings: the hint-based result must win over a late hintless one. |
+| `backoff.test.js` | After a failed sync, page views must not each kick off a new one. |
+| `redirect.test.js` | An expired portal session is recognised even when the portal redirects silently instead of to `/login`. |
+| `mute.test.js` | "Pause" stays in session storage, "Never" lands in sync storage, and both leave the badge alone. |
+| `startup-notify.test.js` | Tabs restored at browser startup raise no notification, but still count. |
+| `package.test.js` | The `package.ps1` allowlist matches what the code needs — nothing missing, nothing superfluous. |
+
+## Limitations
+
+- Without automatic finding, the badge is domain-heuristic only and can
+  under-count until you open the popup.
+- Automatic finding needs the broad all-sites permission, because Chrome only
+  lets extensions read page content without a user gesture if they hold it.
+- The "auto-open popup" level is best-effort; `chrome.action.openPopup()` is
+  restricted outside direct user gestures and often falls back to a
+  notification.
+- Single-page-app navigations that trigger neither a full page load nor a
   `chrome.tabs.onUpdated` "complete" event won't auto-rescan until you switch
-  tabs or reload; use the manual search in the popup as a fallback.
-- If your portal ever changes its HTML structure, the parser in
-  `offscreen.js` (`.cbg3-list-item` selectors) may need updating. Note it
-  already handles two different nestings the portal uses for the same item
-  (`h3 > a` on search results, `a > h3` on category pages) — matching on
-  `h3 a` silently returns nothing on category pages.
-- Brand names in the catalogue are stable, but discount amounts and monthly
-  specials are not. With a one-week lifetime a percentage can be out of date,
-  so the popup always shows how old the data is and offers a Refresh button;
-  the authoritative figure is on the portal page the link leads to anyway.
+  tabs or reload; use the popup's manual search.
+- Discount amounts and monthly specials are not stable. With a one-week cache
+  lifetime a percentage can be out of date, so the popup shows the data's age
+  and offers a refresh; the authoritative figure is on the portal page anyway.
 - Location-dependent offers ("Regionales") are in the catalogue by brand, but
-  the local matcher cannot filter them by your location. Use the popup's
-  search box for those.
-- Only one portal origin is supported at a time; re-running the settings
-  page overwrites the previous one.
+  the local matcher can't filter them by your location. Use the search box.
+- Only one portal origin at a time; saving a new address replaces the old one.
+- If your portal changes its HTML structure, the parser in `offscreen.js`
+  (`.cbg3-list-item` selectors) may need updating. It already handles the two
+  different nestings the portal uses for the same item (`h3 > a` on search
+  results, `a > h3` on category pages) — matching on `h3 a` silently returns
+  nothing on category pages.
 
 ## Disclaimer
 
 This is a private, unofficial tool. It is **not affiliated with, operated by,
-endorsed by, or reviewed by corporate benefits Germany GmbH**. All brand
-names, product names and logos referenced or displayed belong to their
-respective owners.
+endorsed by, or reviewed by corporate benefits Germany GmbH**. All brand names,
+product names and logos referenced or displayed belong to their respective
+owners.
 
 The offer catalogue is deliberately downloaded only once a week — staggered
 rather than in one burst — and all matching afterwards happens locally in your
@@ -141,37 +225,11 @@ browser. This is done explicitly to keep load on corporate benefits' servers as
 low as possible: instead of a search request on every page you visit, only a
 handful of requests are made per week.
 
-Discount figures shown come from the locally cached catalogue and may be out
-of date — only the offer page on the portal itself is authoritative. Provided
+Discount figures shown come from the locally cached catalogue and may be out of
+date — only the offer page on the portal itself is authoritative. Provided
 as-is, without warranty of any kind and without liability.
 
 The offers and discount codes retrieved are subject to your portal's terms of
 use and are confidential: they are intended for eligible employees only and
 must not be shared with third parties or published. This tool does not change
 that — it only shows you, locally, what your own account can already see.
-
-## Files
-
-- `manifest.json` — MV3 manifest.
-- `background.js` — service worker: watches tabs, fetches/parses portal
-  search results, manages the badge/notifications, and answers popup and
-  content-script requests.
-- `content-hints.js` — opt-in content script (registered dynamically once
-  automatic scanning is enabled) that reports page title / og:site_name.
-- `offscreen.js` / `offscreen.html` — offscreen document used to parse the
-  portal's HTML with a real DOMParser (service workers have no DOM).
-- `popup.html` / `popup.js` / `popup.css` — toolbar popup UI.
-- `options.html` / `options.js` / `options.css` — settings page (portal URL,
-  automatic scanning toggle, notification style).
-- `common.js` — shared helpers (URL normalization, brand guessing, i18n).
-- `test/` — run everything with **`node test/run-all.js`**.
-  - `scan-order.test.js` — loads the real `background.js` in a sandbox with
-    stubbed Chrome APIs and replays browser event orderings, asserting the
-    hint-based result wins over a late hintless one.
-  - `catalog.test.js` — asserts that with a fresh catalogue the scan makes
-    **zero** portal requests, and that a stale catalogue falls back to live
-    search.
-  - `matching.test.js` — the local name matcher, including the false-positive
-    cases it must reject.
-- `_locales/en`, `_locales/de` — UI text; Chrome auto-selects based on your
-  browser's language, falling back to English.

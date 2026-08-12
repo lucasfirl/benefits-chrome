@@ -1,6 +1,10 @@
 # Privacy Policy — CB Deal Finder
 
-_Last updated: 10 August 2026_
+_Last updated: 13 August 2026_
+
+> Hosted version (use this URL for the Chrome Web Store listing):
+> <https://lucasfirl.github.io/benefits-chrome/privacy.html> — source in
+> [`docs/privacy.html`](docs/privacy.html). Keep the two in step when editing.
 
 CB Deal Finder is a private, unofficial browser extension. It is not
 affiliated with, operated by, or endorsed by corporate benefits Germany GmbH
@@ -21,11 +25,13 @@ never leaves your device:
 | Data | Why | Where |
 |---|---|---|
 | The portal address you enter | To know which portal to query | `chrome.storage.sync` |
-| Your notification preference | To respect your chosen setting | `chrome.storage.sync` |
+| Your notification, scanning and brand-source preferences | To respect your chosen settings | `chrome.storage.sync` |
+| Sites you switched off, and patterns you added | So a site you silenced stays silent | `chrome.storage.sync` / `chrome.storage.session` |
 | A cached copy of the offer catalogue (brand names, offer titles, discount labels, links) | So sites can be matched locally instead of querying the portal on every page view | `chrome.storage.local` |
 
 The catalogue cache expires after seven days and can be cleared at any time
-by removing the extension.
+by removing the extension. Sites you only paused rather than silenced for good
+live in session storage and are forgotten when the browser closes.
 
 ## What the extension reads
 
@@ -60,8 +66,9 @@ are not logged in to your portal, it simply tells you so.
 ## Third parties
 
 None. No analytics services, no error reporting, no advertising networks, no
-external code or fonts. The extension functions entirely offline apart from
-the requests to your own portal described above.
+external code or fonts — the typefaces are bundled with the extension rather
+than requested from a font host. The extension functions entirely offline apart
+from the requests to your own portal described above.
 
 ## Data retention and deletion
 

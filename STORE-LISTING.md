@@ -1,11 +1,16 @@
 # Chrome Web Store — Einreichungsunterlagen
 
-Fertige Texte zum Kopieren. **Vor dem Einreichen die drei Punkte unter
-"Vorher entscheiden" klären.**
+Fertige Texte zum Kopieren, und das Protokoll der ersten Einreichung.
+
+> **Die Erweiterung ist veröffentlicht:**
+> <https://chromewebstore.google.com/detail/cb-deal-finder/kmijkgcnhgjbkjlfcijccgnfhailkdoj>
+> Der Abschnitt "Vorher entscheiden" ist damit erledigt (Name blieb
+> „CB Deal Finder", Build neutral, Screenshots mit Fantasiedaten) — er bleibt
+> als Begründung stehen und gilt unverändert für jedes weitere Update.
 
 ---
 
-## Vorher entscheiden
+## Vorher entschieden
 
 ### 1. Neutral bauen — nicht der Firmen-Build
 
@@ -97,8 +102,14 @@ liability.
 Productivity (oder Shopping)
 
 ### Datenschutzerklärung-URL
-Pflichtfeld. `PRIVACY.md` öffentlich hosten (GitHub Pages, Gist oder eigene
-Domain) und die URL hier eintragen. **Vorher die Kontakt-E-Mail eintragen.**
+Pflichtfeld, gehostet über GitHub Pages aus `docs/`:
+
+```
+https://lucasfirl.github.io/benefits-chrome/privacy.html
+```
+
+Quelle: `docs/privacy.html`, inhaltsgleich mit `PRIVACY.md` — bei Änderungen
+beide anfassen.
 
 ---
 

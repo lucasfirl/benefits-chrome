@@ -9,8 +9,9 @@
 #   .\package.ps1
 #   .\package.ps1 -DefaultPortal "https://deinefirma.mitarbeiterangebote.de"
 #
-# Mit -DefaultPortal wird die Portal-URL im Build vorbelegt, damit Kollegen die
-# Erweiterung nur noch installieren und nichts mehr eintippen muessen.
+# Mit -DefaultPortal wird die Portal-URL im Build vorbelegt - fuer private
+# Builds, bei denen niemand mehr etwas eintippen soll. NIE fuer den Store-Build:
+# das schriebe den Arbeitgeber in oeffentlichen Code.
 
 param(
     [string]$DefaultPortal = ""
@@ -82,5 +83,4 @@ Write-Host ""
 Write-Host "Fertig: $zip" -ForegroundColor Green
 Write-Host ("Groesse: {0:N0} KB" -f ($count / 1KB))
 Write-Host ""
-Write-Host "Diese Datei kannst du an Kollegen weitergeben." -ForegroundColor Yellow
-Write-Host "Anleitung fuer sie: INSTALL-KOLLEGEN.md"
+Write-Host "Bereit zum Hochladen in die Chrome Web Store Developer Console." -ForegroundColor Yellow
