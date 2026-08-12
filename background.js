@@ -39,6 +39,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
+  // Zu einem Tab hinzuschalten ist eine bewusste Nutzeraktion - ab hier gilt
+  // die Seite als "geoeffnet" und darf sich wieder melden.
+  restoredTabs.delete(tabId);
   chrome.tabs.get(tabId, (tab) => {
     if (chrome.runtime.lastError || !tab) return;
     scheduleScan(tabId, tab.url);
@@ -50,6 +53,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   tabResults.delete(tabId);
   latestScanId.delete(tabId);
   pendingHints.delete(tabId);
+  restoredTabs.delete(tabId);
 });
 
 // Brand hints only ever arrive with the content script's PAGE_HINTS message,
@@ -154,6 +158,41 @@ async function getNotifyLevel() {
 
 const notifiedFor = new Map(); // tabId -> url already notified for
 
+// --- Browserstart: keine Meldungsflut fuer wiederhergestellte Tabs ---
+//
+// Startet Chrome mit den Tabs der letzten Sitzung, laedt es sie alle - jeder
+// loest einen Scan aus, und jeder Treffer wurde bisher zu einer eigenen
+// Windows-Benachrichtigung. Der Nutzer hat aber keine dieser Seiten gerade
+// geoeffnet; melden soll sich die Erweiterung nur, wenn eine Seite wirklich
+// aufgerufen wird.
+// Deshalb merken wir uns beim Start (und nach Installation/Update, wo die
+// bereits offenen Tabs genauso wenig "gerade geoeffnet" sind) jeden nicht
+// sichtbaren Tab mit seiner URL und halten genau diese Kombination stumm.
+// Navigiert der Tab spaeter woanders hin oder schaltet der Nutzer zu ihm,
+// zaehlt das wieder als Seitenaufruf - die Zahl am Symbol bleibt ohnehin
+// die ganze Zeit ueber richtig.
+const restoredTabs = new Map(); // tabId -> URL, die beim Start schon offen war
+let restoredTabsReady = null;
+
+function snapshotRestoredTabs() {
+  restoredTabsReady = (async () => {
+    try {
+      const tabs = await chrome.tabs.query({});
+      for (const tab of tabs) {
+        // Der aktive Tab ist der, den der Nutzer beim Start vor sich hat -
+        // eine einzelne Meldung dafuer ist gewollt.
+        if (tab.id != null && tab.url && !tab.active) restoredTabs.set(tab.id, tab.url);
+      }
+    } catch (e) {
+      /* ohne Momentaufnahme wird eben gemeldet - lieber zu viel als kaputt */
+    }
+  })();
+  return restoredTabsReady;
+}
+
+if (chrome.runtime.onStartup) chrome.runtime.onStartup.addListener(snapshotRestoredTabs);
+if (chrome.runtime.onInstalled) chrome.runtime.onInstalled.addListener(snapshotRestoredTabs);
+
 // Das Popup gehoert immer zum *aktiven* Tab - es kann gar nichts anderes
 // anzeigen. Oeffnet man es wegen eines Treffers in einem Hintergrundtab (beim
 // Browserstart wird jeder wiederhergestellte Tab gescannt), erscheint es also
@@ -177,6 +216,10 @@ async function isVisibleTab(tabId) {
 async function maybeNotify(tabId, state) {
   if (state.status !== STATUS.OK || !state.deals || state.deals.length === 0) return;
   if (notifiedFor.get(tabId) === state.url) return; // already notified for this exact page
+  // Die Momentaufnahme laeuft parallel zu den ersten Scans nach dem Start -
+  // erst abwarten, sonst waere sie fuer genau die Tabs zu spaet, um die es geht.
+  if (restoredTabsReady) await restoredTabsReady;
+  if (restoredTabs.get(tabId) === state.url) return; // beim Start wiederhergestellt
   const level = await getNotifyLevel();
   if (level === "silent") return;
   // Fuer diese Seite abgeschaltet (voruebergehend oder dauerhaft): die Zahl am
