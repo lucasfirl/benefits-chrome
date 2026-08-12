@@ -15,6 +15,13 @@ auto-selected from your browser's language.
 > Private, unofficial tool. Not affiliated with, operated by, endorsed by or
 > reviewed by corporate benefits Germany GmbH. See [Disclaimer](#disclaimer).
 
+<p align="center">
+  <img src="assets/popup-en.png" width="380"
+       alt="The extension's popup on a shop page, listing three matching offers with their discount figures, above a brand search box and the catalogue's age.">
+  <br>
+  <sub>Sample data — real portal offers are confidential and must not be reproduced.</sub>
+</p>
+
 ---
 
 ## What it does
@@ -171,6 +178,7 @@ justifications, reviewer notes — are in [`STORE-LISTING.md`](STORE-LISTING.md)
 | `src/theme.css`, `src/fonts/` | Shared design tokens; IBM Plex bundled locally so the UI makes no outbound request. |
 | `src/_locales/en`, `/de` | UI text; Chrome picks by browser language, falling back to English. |
 | `package.ps1` | Build script — packs `src/` into `dist/cb-deal-finder-<version>.zip`. |
+| `assets/` | Images used by this README. Not shipped. |
 | `test/` | See below. |
 
 ### Tests
