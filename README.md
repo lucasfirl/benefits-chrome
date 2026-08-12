@@ -140,29 +140,23 @@ background script and manifest changes don't apply until you do.
 
 ## Development
 
-```powershell
+```sh
 node test/run-all.js     # all tests, no dependencies beyond Node 22
-.\package.ps1            # build dist/cb-deal-finder-<version>.zip
 ```
 
 Everything that ships lives in `src/`; everything else in the repo does not.
-`package.ps1` packs the **contents** of `src/` — `manifest.json` has to sit at
-the ZIP root — and does so from an **allowlist**, not an exclusion list: only
-files named in it are packaged. That is deliberate, since the project folder
-also holds tests, docs and Playwright snapshots of a real portal, none of which
-may ever ship. `test/package.test.js` checks the allowlist against what the
-code actually references, in both directions.
+That boundary is the whole packaging rule: the ZIP is the **contents** of
+`src/`, zipped from inside it so `manifest.json` lands at the archive root,
+where Chrome expects it. Nothing needs excluding, because nothing that must not
+ship lives there in the first place.
 
-Passing `-DefaultPortal "https://yourcompany.mitarbeiterangebote.de"` pre-fills
-the portal address for a private build. **Never for a Web Store build** — it
-would put an employer's name in public code.
+```sh
+cd src && zip -qr ../dist/cb-deal-finder-1.1.0.zip .
+```
 
-CI runs the tests on every push and PR and uploads the ZIP as an artifact.
+CI runs the tests on every push and PR and uploads that ZIP as an artifact.
 Pushing a `v*` tag runs [`release.yml`](.github/workflows/release.yml), which
-tests, packages and publishes a GitHub release.
-
-Notes for a Web Store submission — listing copy, per-permission
-justifications, reviewer notes — are in [`STORE-LISTING.md`](STORE-LISTING.md).
+tests, builds the same archive and publishes it as a GitHub release.
 
 ### Layout
 
@@ -177,7 +171,6 @@ justifications, reviewer notes — are in [`STORE-LISTING.md`](STORE-LISTING.md)
 | `src/options.*` | Settings page: status, portal address, automatic finding, notification style, brand sources, mute list, catalogue. |
 | `src/theme.css`, `src/fonts/` | Shared design tokens; IBM Plex bundled locally so the UI makes no outbound request. |
 | `src/_locales/en`, `/de` | UI text; Chrome picks by browser language, falling back to English. |
-| `package.ps1` | Build script — packs `src/` into `dist/cb-deal-finder-<version>.zip`. |
 | `assets/` | Images used by this README. Not shipped. |
 | `test/` | See below. |
 
@@ -197,7 +190,6 @@ against shipping code rather than a reimplementation.
 | `redirect.test.js` | An expired portal session is recognised even when the portal redirects silently instead of to `/login`. |
 | `mute.test.js` | "Pause" stays in session storage, "Never" lands in sync storage, and both leave the badge alone. |
 | `startup-notify.test.js` | Tabs restored at browser startup raise no notification, but still count. |
-| `package.test.js` | The `package.ps1` allowlist matches what the code needs — nothing missing, nothing superfluous. |
 
 ## Limitations
 

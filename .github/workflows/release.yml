@@ -1,4 +1,4 @@
-﻿name: Release
+name: Release
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   release:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -22,13 +22,15 @@ jobs:
           node-version: 22
       - name: Run tests
         run: node test/run-all.js
+      # Same archive CI builds: zipped from inside src/, so manifest.json sits
+      # at the root of the ZIP, which is where Chrome expects it.
       - name: Build ZIP
-        shell: pwsh
-        run: ./package.ps1
+        run: |
+          v=$(node -p "require('./src/manifest.json').version")
+          mkdir -p dist
+          (cd src && zip -qr "../dist/cb-deal-finder-$v.zip" .)
       - name: Publish release
-        shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          $tag = if ("${{ inputs.tag }}") { "${{ inputs.tag }}" } else { "${{ github.ref_name }}" }
-          gh release create $tag (Get-ChildItem dist/*.zip).FullName --title $tag --generate-notes
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: gh release create "$TAG" dist/*.zip --title "$TAG" --generate-notes

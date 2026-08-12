@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   push:
@@ -18,19 +18,20 @@ jobs:
         run: node test/run-all.js
 
   package:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: test
     steps:
       - uses: actions/checkout@v5
-      - name: Build ZIP
-        shell: pwsh
-        run: ./package.ps1
       - name: Read version
         id: v
-        shell: pwsh
+        run: echo "version=$(node -p "require('./src/manifest.json').version")" >> "$GITHUB_OUTPUT"
+      # Zipped from inside src/ so that manifest.json lands at the archive root,
+      # which is where Chrome expects it. src/ holds what ships and nothing else,
+      # so there is nothing here to exclude.
+      - name: Build ZIP
         run: |
-          $v = (Get-Content src/manifest.json -Raw | ConvertFrom-Json).version
-          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          mkdir -p dist
+          (cd src && zip -qr "../dist/cb-deal-finder-${{ steps.v.outputs.version }}.zip" .)
       - uses: actions/upload-artifact@v5
         with:
           name: cb-deal-finder-${{ steps.v.outputs.version }}
