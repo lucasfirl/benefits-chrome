@@ -123,12 +123,14 @@ when a percentage looks wrong.
 
 ### From source
 
-Clone the repo (or unpack a
-[release ZIP](https://github.com/lucasfirl/benefits-chrome/releases/latest)),
-then in `chrome://extensions` enable **Developer mode** and use **Load
-unpacked** on the folder containing `manifest.json`. After pulling changes,
-click the reload icon on the extension's card — background script and manifest
-changes don't apply until you do.
+Clone the repo, then in `chrome://extensions` enable **Developer mode** and
+use **Load unpacked** on the **`src/`** folder — that's where `manifest.json`
+lives; pointing Chrome at the repo root won't work. Unpacked
+[release ZIPs](https://github.com/lucasfirl/benefits-chrome/releases/latest)
+are already rooted at the manifest, so those you load directly.
+
+After pulling changes, click the reload icon on the extension's card —
+background script and manifest changes don't apply until you do.
 
 ## Development
 
@@ -137,11 +139,13 @@ node test/run-all.js     # all tests, no dependencies beyond Node 22
 .\package.ps1            # build dist/cb-deal-finder-<version>.zip
 ```
 
-`package.ps1` builds from an **allowlist**, not an exclusion list: only files
-named in it are packaged. That is deliberate — the project folder also holds
-tests, docs and Playwright snapshots of a real portal, none of which may ever
-ship. `test/package.test.js` checks the allowlist against what the code
-actually references, in both directions.
+Everything that ships lives in `src/`; everything else in the repo does not.
+`package.ps1` packs the **contents** of `src/` — `manifest.json` has to sit at
+the ZIP root — and does so from an **allowlist**, not an exclusion list: only
+files named in it are packaged. That is deliberate, since the project folder
+also holds tests, docs and Playwright snapshots of a real portal, none of which
+may ever ship. `test/package.test.js` checks the allowlist against what the
+code actually references, in both directions.
 
 Passing `-DefaultPortal "https://yourcompany.mitarbeiterangebote.de"` pre-fills
 the portal address for a private build. **Never for a Web Store build** — it
@@ -158,22 +162,23 @@ justifications, reviewer notes — are in [`STORE-LISTING.md`](STORE-LISTING.md)
 
 | Path | What it is |
 |---|---|
-| `manifest.json` | MV3 manifest. |
-| `background.js` | Service worker: watches tabs, syncs and matches the catalogue, manages badge/notifications, answers popup and content-script requests. |
-| `common.js` | Shared helpers — URL normalisation, brand guessing, matching, i18n. |
-| `content-hints.js` | Opt-in content script (registered dynamically when automatic finding is on) reporting page title / `og:site_name`. |
-| `offscreen.js` / `offscreen.html` | Offscreen document that parses the portal's HTML with a real `DOMParser` — service workers have no DOM. |
-| `popup.*` | Toolbar popup UI. |
-| `options.*` | Settings page: status, portal address, automatic finding, notification style, brand sources, mute list, catalogue. |
-| `theme.css`, `fonts/` | Shared design tokens; IBM Plex bundled locally so the UI makes no outbound request. |
-| `_locales/en`, `_locales/de` | UI text; Chrome picks by browser language, falling back to English. |
+| `src/manifest.json` | MV3 manifest. |
+| `src/background.js` | Service worker: watches tabs, syncs and matches the catalogue, manages badge/notifications, answers popup and content-script requests. |
+| `src/common.js` | Shared helpers — URL normalisation, brand guessing, matching, i18n. |
+| `src/content-hints.js` | Opt-in content script (registered dynamically when automatic finding is on) reporting page title / `og:site_name`. |
+| `src/offscreen.js` / `.html` | Offscreen document that parses the portal's HTML with a real `DOMParser` — service workers have no DOM. |
+| `src/popup.*` | Toolbar popup UI. |
+| `src/options.*` | Settings page: status, portal address, automatic finding, notification style, brand sources, mute list, catalogue. |
+| `src/theme.css`, `src/fonts/` | Shared design tokens; IBM Plex bundled locally so the UI makes no outbound request. |
+| `src/_locales/en`, `/de` | UI text; Chrome picks by browser language, falling back to English. |
+| `package.ps1` | Build script — packs `src/` into `dist/cb-deal-finder-<version>.zip`. |
 | `docs/` | The GitHub Pages site (project page + hosted privacy policy). |
 | `test/` | See below. |
 
 ### Tests
 
 Run everything with **`node test/run-all.js`**. The behavioural tests load the
-real `background.js` in a `vm` sandbox with stubbed Chrome APIs, so they assert
+real `src/background.js` in a `vm` sandbox with stubbed Chrome APIs, so they assert
 against shipping code rather than a reimplementation.
 
 | Test | Asserts |
@@ -206,7 +211,7 @@ against shipping code rather than a reimplementation.
 - Location-dependent offers ("Regionales") are in the catalogue by brand, but
   the local matcher can't filter them by your location. Use the search box.
 - Only one portal origin at a time; saving a new address replaces the old one.
-- If your portal changes its HTML structure, the parser in `offscreen.js`
+- If your portal changes its HTML structure, the parser in `src/offscreen.js`
   (`.cbg3-list-item` selectors) may need updating. It already handles the two
   different nestings the portal uses for the same item (`h3 > a` on search
   results, `a > h3` on category pages) — matching on `h3 a` silently returns

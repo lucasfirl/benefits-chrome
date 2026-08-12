@@ -9,7 +9,7 @@ const fs = require("fs");
 const vm = require("vm");
 const path = require("path");
 
-const EXT = path.join(__dirname, "..");
+const EXT = path.join(__dirname, "..", "src");
 const PORTAL = "https://example.mitarbeiterangebote.de";
 const noop = () => ({ addListener() {} });
 

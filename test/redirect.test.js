@@ -8,7 +8,7 @@ const path = require("path");
 const test = require("node:test");
 const assert = require("node:assert");
 
-const EXT = path.join(__dirname, "..");
+const EXT = path.join(__dirname, "..", "src");
 const PORTAL = "https://example.mitarbeiterangebote.de";
 
 function loadBackground() {

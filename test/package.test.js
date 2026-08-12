@@ -7,14 +7,20 @@
 //   - die Allowlist listet etwas Nichtexistentes/Ueberfluessiges
 //
 // Die Allowlist ist bewusst eine Positivliste: im Projektordner liegen Tests,
-// Doku und die Kollegen-Anleitung mit einer echten Portal-URL, die niemals
-// mitverteilt werden duerfen.
+// Doku und Test-Snapshots, die niemals mitverteilt werden duerfen.
 
 const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
-const read = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
+const SRC = path.join(ROOT, "src");
+
+// Die Allowlist ist relativ zu src/ gedacht: manifest.json muss in der Wurzel
+// des ZIP liegen, nicht in einem src-Unterordner. Alles, was mit Paketinhalt
+// zu tun hat, wird darum unter SRC aufgeloest - nur package.ps1 selbst liegt
+// im Projektstamm.
+const read = (f) => fs.readFileSync(path.join(SRC, f), "utf8");
+const readRoot = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
 
 // --- 1) Was braucht der Code? -------------------------------------------
 
@@ -33,7 +39,7 @@ add(mf.action && mf.action.default_popup, "action.default_popup");
 add(mf.background && mf.background.service_worker, "service_worker");
 add(mf.options_page, "options_page");
 if (mf.default_locale) {
-  for (const loc of fs.readdirSync(path.join(ROOT, "_locales"))) {
+  for (const loc of fs.readdirSync(path.join(SRC, "_locales"))) {
     add(`_locales/${loc}/messages.json`, `locale ${loc}`);
   }
 }
@@ -58,7 +64,7 @@ for (const js of ["background.js", "popup.js", "options.js", "offscreen.js", "co
 
 // --- 2) Was listet die Allowlist? ---------------------------------------
 
-const ps1 = read("package.ps1");
+const ps1 = readRoot("package.ps1");
 const block = ps1.match(/\$allow\s*=\s*@\(([\s\S]*?)\)/);
 if (!block) {
   console.log("FAIL  Allowlist in package.ps1 nicht gefunden");
@@ -84,7 +90,7 @@ if (uncovered.length === 0) {
   fail++;
 }
 
-const ghosts = allow.filter((e) => !fs.existsSync(path.join(ROOT, e)));
+const ghosts = allow.filter((e) => !fs.existsSync(path.join(SRC, e)));
 if (ghosts.length === 0) {
   console.log(`PASS  alle ${allow.length} Allowlist-Eintraege existieren`);
   pass++;
@@ -96,7 +102,7 @@ if (ghosts.length === 0) {
 
 // Allowlist-Eintraege, die von nichts gebraucht werden (Ballast)
 const unusedEntries = allow.filter((entry) => {
-  const isDir = fs.existsSync(path.join(ROOT, entry)) && fs.statSync(path.join(ROOT, entry)).isDirectory();
+  const isDir = fs.existsSync(path.join(SRC, entry)) && fs.statSync(path.join(SRC, entry)).isDirectory();
   if (isDir) return ![...referenced.keys()].some((f) => f.startsWith(entry + "/"));
   return !referenced.has(entry);
 });

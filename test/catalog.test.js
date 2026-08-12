@@ -5,7 +5,7 @@ const fs = require("fs");
 const vm = require("vm");
 const path = require("path");
 
-const EXT = path.join(__dirname, "..");
+const EXT = path.join(__dirname, "..", "src");
 const PORTAL = "https://example.mitarbeiterangebote.de";
 
 function loadBackground(catalog) {
@@ -200,7 +200,7 @@ async function scenario(name, catalog, url, hints, expect) {
 
   // Formatierung: aus dem Zeitstempel muss ein lesbares Datum werden
   {
-    const c = require("../common.js");
+    const c = require("../src/common.js");
     const ts = new Date(2026, 7, 8, 12, 44).getTime();
     const text = c.formatCachedAt(ts, "de-DE");
     const ok = text === "08.08.26 12:44";
@@ -209,7 +209,7 @@ async function scenario(name, catalog, url, hints, expect) {
   }
 
   // Die Konstante selbst festnageln, damit sie nicht unbemerkt driftet.
-  const c = require("../common.js");
+  const c = require("../src/common.js");
   const ttlOk = c.CB_CATALOG_MAX_AGE_MS === 7 * DAY;
   console.log(`${ttlOk ? "PASS" : "FAIL"}  Cache-Dauer ist eine Woche (${c.CB_CATALOG_MAX_AGE_MS / DAY} Tage)`);
   results.push(ttlOk);

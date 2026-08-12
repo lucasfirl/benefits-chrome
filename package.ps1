@@ -1,5 +1,8 @@
 # Baut ein verteilbares ZIP der Erweiterung.
 #
+# Gepackt wird ausschliesslich aus src/, und zwar dessen INHALT: manifest.json
+# muss in der Wurzel des ZIP liegen, nicht in einem Unterordner.
+#
 # Bewusst als ALLOWLIST: es wird nur eingepackt, was hier ausdruecklich steht.
 # Eine Ausschlussliste waere gefaehrlich - im Projektordner liegen Test-Snapshots
 # (.playwright-mcp/) mit echten Portalinhalten und Klarnamen, die niemals
@@ -19,6 +22,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
+$src  = Join-Path $root "src"
 
 # --- Was ins Paket gehoert ---
 $allow = @(
@@ -48,9 +52,9 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 if (-not (Test-Path $dist)) { New-Item -ItemType Directory -Path $dist -Force | Out-Null }
 
 foreach ($item in $allow) {
-    $src = Join-Path $root $item
-    if (-not (Test-Path $src)) { throw "Fehlende Datei im Allowlist: $item" }
-    Copy-Item $src -Destination $stage -Recurse -Force
+    $from = Join-Path $src $item
+    if (-not (Test-Path $from)) { throw "Fehlende Datei im Allowlist: $item" }
+    Copy-Item $from -Destination $stage -Recurse -Force
 }
 
 # Optional: Portal-URL vorbelegen
@@ -71,7 +75,7 @@ if ($leaked) {
     throw "ABBRUCH: unerwartete Dateien im Paket (siehe oben)."
 }
 
-$version = (Get-Content (Join-Path $root "manifest.json") -Raw | ConvertFrom-Json).version
+$version = (Get-Content (Join-Path $src "manifest.json") -Raw | ConvertFrom-Json).version
 $zip = Join-Path $dist "cb-deal-finder-$version.zip"
 if (Test-Path $zip) { Remove-Item $zip -Force }
 

@@ -3,7 +3,7 @@
 // grosszuegiger Abgleich waere schlimmer als ein verpasster Treffer, weil er
 // falsche Rabatte anzeigen wuerde.
 
-const c = require("../common.js");
+const c = require("../src/common.js");
 
 const CASES = [
   // [Kandidat, Katalog-Marke, erwartet, Begruendung]
