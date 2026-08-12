@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag fuer den Release (z. B. v0.1.0)"
+        description: "Tag to release (e.g. v1.1.0)"
         required: true
 
 permissions:
@@ -20,12 +20,12 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Tests
+      - name: Run tests
         run: node test/run-all.js
-      - name: ZIP bauen
+      - name: Build ZIP
         shell: pwsh
         run: ./package.ps1
-      - name: Release veroeffentlichen
+      - name: Publish release
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}

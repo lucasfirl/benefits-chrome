@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Tests
+      - name: Run tests
         run: node test/run-all.js
 
   package:
@@ -22,10 +22,10 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v5
-      - name: ZIP bauen
+      - name: Build ZIP
         shell: pwsh
         run: ./package.ps1
-      - name: Version lesen
+      - name: Read version
         id: v
         shell: pwsh
         run: |
