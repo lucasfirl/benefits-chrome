@@ -157,7 +157,9 @@ cd src && zip -qr ../dist/cb-deal-finder-1.1.1.zip .
 CI runs the tests on every push and PR and uploads that ZIP as an artifact.
 Pushing a `v*` tag runs [`release.yml`](.github/workflows/release.yml), which
 tests, builds the same archive, signs it into a `.crx` and publishes that as a
-GitHub release.
+GitHub release — wrapped in a ZIP, because a Chromium browser downloading a
+bare `.crx` tries to install it, fails since it is not from the store, and
+throws the file away.
 
 ### Signing
 
