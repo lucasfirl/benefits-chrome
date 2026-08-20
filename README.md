@@ -131,9 +131,9 @@ when a percentage looks wrong.
 
 Clone the repo, then in `chrome://extensions` enable **Developer mode** and
 use **Load unpacked** on the **`src/`** folder — that's where `manifest.json`
-lives; pointing Chrome at the repo root won't work. Unpacked
-[release ZIPs](https://github.com/lucasfirl/benefits-chrome/releases/latest)
-are already rooted at the manifest, so those you load directly.
+lives; pointing Chrome at the repo root won't work. Releases ship a signed
+`.crx` for the store's verified uploads, not a loadable folder, so loading
+`src/` is the way to run it from source.
 
 After pulling changes, click the reload icon on the extension's card —
 background script and manifest changes don't apply until you do.
@@ -151,12 +151,29 @@ where Chrome expects it. Nothing needs excluding, because nothing that must not
 ship lives there in the first place.
 
 ```sh
-cd src && zip -qr ../dist/cb-deal-finder-1.1.0.zip .
+cd src && zip -qr ../dist/cb-deal-finder-1.1.1.zip .
 ```
 
 CI runs the tests on every push and PR and uploads that ZIP as an artifact.
 Pushing a `v*` tag runs [`release.yml`](.github/workflows/release.yml), which
-tests, builds the same archive and publishes it as a GitHub release.
+tests, builds the same archive, signs it into a `.crx` and publishes that as a
+GitHub release.
+
+### Signing
+
+The Web Store item has **verified CRX uploads** enabled: every update must be a
+`.crx` signed with the key whose public half is registered on the item. The key
+pair comes from [`tools/gen-crx-key.js`](tools/gen-crx-key.js) —
+
+```sh
+node tools/gen-crx-key.js          # writes crx-key.pem, prints the public key
+```
+
+— the printed public key goes into the store's *Enable verified CRX uploads*
+form, and the private key into the `CRX_PRIVATE_KEY` repository secret, which
+[`tools/pack-crx.js`](tools/pack-crx.js) reads during a release. Keep a copy of
+the private key somewhere safe: lose it and the item can only be updated again
+via Chrome Web Store support.
 
 ### Layout
 

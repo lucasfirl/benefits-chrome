@@ -22,15 +22,22 @@ jobs:
           node-version: 22
       - name: Run tests
         run: node test/run-all.js
-      # Same archive CI builds: zipped from inside src/, so manifest.json sits
-      # at the root of the ZIP, which is where Chrome expects it.
-      - name: Build ZIP
+      # Same archive CI builds - zipped from inside src/, so manifest.json sits
+      # at the root, which is where Chrome expects it - then signed into a CRX
+      # with the store's registered key. The Web Store only accepts verified
+      # uploads for this item, so the CRX is what gets released; the
+      # intermediate ZIP is dropped again.
+      - name: Build signed CRX
+        env:
+          CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
         run: |
           v=$(node -p "require('./src/manifest.json').version")
           mkdir -p dist
           (cd src && zip -qr "../dist/cb-deal-finder-$v.zip" .)
+          node tools/pack-crx.js "dist/cb-deal-finder-$v.zip" "dist/cb-deal-finder-$v.crx"
+          rm "dist/cb-deal-finder-$v.zip"
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag || github.ref_name }}
-        run: gh release create "$TAG" dist/*.zip --title "$TAG" --generate-notes
+        run: gh release create "$TAG" dist/*.crx --title "$TAG" --generate-notes
