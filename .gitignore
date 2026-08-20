@@ -2,3 +2,6 @@ dist/
 .playwright-mcp/
 *.zip
 node_modules/
+crx-key.pem
+*.pem
+*.crx
