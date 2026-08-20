@@ -24,9 +24,14 @@ jobs:
         run: node test/run-all.js
       # Same archive CI builds - zipped from inside src/, so manifest.json sits
       # at the root, which is where Chrome expects it - then signed into a CRX
-      # with the store's registered key. The Web Store only accepts verified
-      # uploads for this item, so the CRX is what gets released; the
-      # intermediate ZIP is dropped again.
+      # with the store's registered key, because the item only accepts verified
+      # uploads.
+      #
+      # The CRX ships wrapped in a ZIP of its own: Chromium browsers treat a
+      # .crx download as an extension to install, refuse it because it is not
+      # from the store, and discard the file instead of saving it. Wrapped, the
+      # release asset downloads like any other file. Unzip it and upload the
+      # .crx to the store.
       - name: Build signed CRX
         env:
           CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
@@ -36,8 +41,9 @@ jobs:
           (cd src && zip -qr "../dist/cb-deal-finder-$v.zip" .)
           node tools/pack-crx.js "dist/cb-deal-finder-$v.zip" "dist/cb-deal-finder-$v.crx"
           rm "dist/cb-deal-finder-$v.zip"
+          (cd dist && zip -q "cb-deal-finder-$v.crx.zip" "cb-deal-finder-$v.crx")
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag || github.ref_name }}
-        run: gh release create "$TAG" dist/*.crx --title "$TAG" --generate-notes
+        run: gh release create "$TAG" dist/*.crx.zip --title "$TAG" --generate-notes
